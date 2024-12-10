@@ -139,8 +139,8 @@ enum BBType: Int {
   case plain
   case br
   case paragraphStart, paragraphEnd
-  case quote, code, hide, url, image, video, flash, user, post, topic
-  case bold, italic, underline, delete, color, header
+  case quote, code, url, image, center, left, right
+  case bold, italic, underline, delete, color, size, mask
   case smilies  // one to many
 }
 
@@ -435,10 +435,10 @@ func handleNewlineAndParagraph(node: DOMNode, tagManager: TagManager) {
   }
 
   let currentIsBlock = node.description?.isBlock ?? false
-  if currentIsBlock && !(node.children.first?.description?.isBlock ?? false) && node.type != .code {
-    node.children.insert(
-      newDOMNode(type: .paragraphStart, parent: node, tagManager: tagManager), at: 0)
-  }
+  // if currentIsBlock && !(node.children.first?.description?.isBlock ?? false) && node.type != .code {
+  //   node.children.insert(
+  //     newDOMNode(type: .paragraphStart, parent: node, tagManager: tagManager), at: 0)
+  // }
 
   var brCount = 0
   var previous: DOMNode? = nil
@@ -548,7 +548,8 @@ public class BBCode {
           isBlock: false,
           render: { (n: DOMNode, args: [String: Any]?) in
             return n.escapedValue
-          })
+          }
+        )
       ),
       (
         "", .br,
@@ -559,7 +560,8 @@ public class BBCode {
           isBlock: false,
           render: { (n: DOMNode, args: [String: Any]?) in
             return "<br>"
-          })
+          }
+        )
       ),
       (
         "", .paragraphStart,
@@ -570,7 +572,8 @@ public class BBCode {
           isBlock: false,
           render: { (n: DOMNode, args: [String: Any]?) in
             return "<p>"
-          })
+          }
+        )
       ),
       (
         "", .paragraphEnd,
@@ -581,15 +584,16 @@ public class BBCode {
           isBlock: false,
           render: { (n: DOMNode, args: [String: Any]?) in
             return "</p>"
-          })
+          }
+        )
       ),
       (
         "quote", .quote,
         TagDescription(
           tagNeeded: true, isSelfClosing: false,
           allowedChildren: [
-            .br, .bold, .italic, .underline, .delete, .header, .color, .quote, .code, .hide, .url,
-            .image, .flash, .user, .post, .topic, .smilies,
+            .br, .bold, .italic, .underline, .delete, .color, .mask, .size, .quote, .code, .url,
+            .image, .smilies,
           ],
           allowAttr: true,
           isBlock: true,
@@ -603,7 +607,65 @@ public class BBCode {
             html.append(n.renderChildren(args))
             html.append("</div></blockquote></div>")
             return html
-          })
+          }
+        )
+      ),
+      (
+        "center", .center,
+        TagDescription(
+          tagNeeded: true, isSelfClosing: false,
+          allowedChildren: [
+            .br, .bold, .italic, .underline, .delete, .color,
+            .mask, .size, .quote, .code, .url, .image,
+          ],
+          allowAttr: false,
+          isBlock: true,
+          render: { (n: DOMNode, args: [String: Any]?) in
+            var html: String
+            html = "<p style=\"text-align: center;\">"
+            html.append(n.renderChildren(args))
+            html.append("</p>")
+            return html
+          }
+        )
+      ),
+      (
+        "left", .left,
+        TagDescription(
+          tagNeeded: true, isSelfClosing: false,
+          allowedChildren: [
+            .br, .bold, .italic, .underline, .delete, .color,
+            .mask, .size, .quote, .code, .url, .image,
+          ],
+          allowAttr: false,
+          isBlock: true,
+          render: { (n: DOMNode, args: [String: Any]?) in
+            var html: String
+            html = "<p style=\"text-align: left;\">"
+            html.append(n.renderChildren(args))
+            html.append("</p>")
+            return html
+          }
+        )
+      ),
+      (
+        "right", .right,
+        TagDescription(
+          tagNeeded: true, isSelfClosing: false,
+          allowedChildren: [
+            .br, .bold, .italic, .underline, .delete, .color,
+            .mask, .size, .quote, .code, .url, .image,
+          ],
+          allowAttr: false,
+          isBlock: true,
+          render: { (n: DOMNode, args: [String: Any]?) in
+            var html: String
+            html = "<p style=\"text-align: right;\">"
+            html.append(n.renderChildren(args))
+            html.append("</p>")
+            return html
+          }
+        )
       ),
       (
         "code", .code,
@@ -615,36 +677,8 @@ public class BBCode {
             html.append(n.renderChildren(args))
             html.append("</code></pre></div>")
             return html
-          })
-      ),
-      (
-        "hide", .hide,
-        TagDescription(
-          tagNeeded: true, isSelfClosing: false,
-          allowedChildren: [
-            .br, .bold, .italic, .underline, .delete, .header, .color, .quote, .code, .hide, .url,
-            .image, .flash, .user, .post, .topic, .smilies,
-          ], allowAttr: true, isBlock: true,
-          render: { (n: DOMNode, args: [String: Any]?) in
-            let numberPosts = args?["post number"] as? Int ?? Int(0)
-            var threshold: Int
-            if n.attr.isEmpty {
-              threshold = 1
-            } else {
-              threshold = Int(n.attr) ?? 1
-              if threshold < 1 {
-                threshold = 1
-              }
-            }
-            var html = "<div class=\"quotebox\"><cite>Hidden text</cite><blockquote><div>"
-            if numberPosts >= threshold {
-              html.append(n.renderChildren(args))
-            } else {
-              html.append("<p>Post number >= \(threshold) can see")
-            }
-            html.append("</div></blockquote></div>")
-            return html
-          })
+          }
+        )
       ),
       (
         "url", .url,
@@ -683,7 +717,8 @@ public class BBCode {
               }
             }
             return html
-          })
+          }
+        )
       ),
       (
         "img", .image,
@@ -697,128 +732,25 @@ public class BBCode {
             let link: String = n.renderChildren(args)
             if let safeLink = safeUrl(url: link, defaultScheme: scheme, defaultHost: host) {
               if n.attr.isEmpty {
-                html = "<span class=\"postimg\"><img src=\"\(safeLink)\" alt=\"\" /></span>"
+                html = "<img src=\"\(safeLink)\" alt=\"\" />"
               } else {
                 let values = n.attr.components(separatedBy: ",").compactMap { Int($0) }
                 if values.count == 2 && values[0] > 0 && values[0] <= 4096 && values[1] > 0
                   && values[1] <= 4096
                 {
                   html =
-                    "<span class=\"postimg\"><img src=\"\(safeLink)\" alt=\"\" width=\"\(values[0])\" height=\"\(values[1])\" /></span>"
+                    "<img src=\"\(safeLink)\" alt=\"\" width=\"\(values[0])\" height=\"\(values[1])\" />"
                 } else {
                   html =
-                    "<span class=\"postimg\"><img src=\"\(safeLink)\" alt=\"\(n.escapedAttr)\" /></span>"
+                    "<img src=\"\(safeLink)\" alt=\"\(n.escapedAttr)\" />"
                 }
               }
               return html
             } else {
               return link
             }
-          })
-      ),
-      (
-        "video", .video,
-        TagDescription(
-          tagNeeded: true, isSelfClosing: false, allowedChildren: nil, allowAttr: true,
-          isBlock: false,
-          render: { (n: DOMNode, args: [String: Any]?) in
-            let scheme = args?["current_scheme"] as? String ?? "http"
-            let host = args?["host"] as? String
-            var html: String
-            let link: String = n.renderChildren(args)
-            if let safeLink = safeUrl(url: link, defaultScheme: scheme, defaultHost: host) {
-              if n.attr.isEmpty {
-                html =
-                  "<span class=\"postimg\"><video src=\"\(safeLink)\" autoplay loop muted><a href=\"\(safeLink)\">Download</a></video></span>"
-              } else {
-                let values = n.attr.components(separatedBy: ",").compactMap { Int($0) }
-                if values.count == 2 && values[0] > 0 && values[0] <= 4096 && values[1] > 0
-                  && values[1] <= 4096
-                {
-                  html =
-                    "<span class=\"postimg\"><video src=\"\(safeLink)\" width=\"\(values[0])\" height=\"\(values[1])\" autoplay loop muted><a href=\"\(safeLink)\">Download</a></video></span>"
-                } else {
-                  html =
-                    "<span class=\"postimg\"><video src=\"\(safeLink)\" autoplay loop muted><a href=\"\(safeLink)\">Download</a></video></span>"
-                }
-              }
-              return html
-            } else {
-              return link
-            }
-          })
-      ),
-      (
-        "user", .user,
-        TagDescription(
-          tagNeeded: true, isSelfClosing: false, allowedChildren: nil, allowAttr: true,
-          isBlock: false,
-          render: { (n: DOMNode, args: [String: Any]?) in
-            var userIdStr: String
-            if n.attr.isEmpty {
-              userIdStr = n.renderChildren(args)
-              if let userId = UInt32(userIdStr) {
-                return "<a href=\"/user/\(userId)\">/user/\(userId)</a>"
-              } else {
-                return "[user]" + userIdStr + "[/user]"
-              }
-            } else {
-              let text = n.renderChildren(args)
-              if let userId = UInt32(n.attr) {
-                return "<a href=\"/user/\(userId)\">\(text)</a>"
-              } else {
-                return "[user=\(n.escapedAttr)]\(text)[/user]"
-              }
-            }
-          })
-      ),
-      (
-        "post", .post,
-        TagDescription(
-          tagNeeded: true, isSelfClosing: false, allowedChildren: nil, allowAttr: true,
-          isBlock: false,
-          render: { (n: DOMNode, args: [String: Any]?) in
-            var postIdStr: String
-            if n.attr.isEmpty {
-              postIdStr = n.renderChildren(args)
-              if let postId = UInt32(postIdStr) {
-                return "<a href=\"/post/\(postId)#\(postId)\">/post/\(postId)</a>"
-              } else {
-                return "[post]" + postIdStr + "[/post]"
-              }
-            } else {
-              let text = n.renderChildren(args)
-              if let postId = UInt32(n.attr) {
-                return "<a href=\"/post/\(postId)#\(postId)\">\(text)</a>"
-              } else {
-                return "[post=\(n.escapedAttr)]\(text)[/post]"
-              }
-            }
-          })
-      ),
-      (
-        "topic", .topic,
-        TagDescription(
-          tagNeeded: true, isSelfClosing: false, allowedChildren: nil, allowAttr: true,
-          isBlock: false,
-          render: { (n: DOMNode, args: [String: Any]?) in
-            var idStr: String
-            if n.attr.isEmpty {
-              idStr = n.renderChildren(args)
-              if let id = UInt32(idStr) {
-                return "<a href=\"/topic/\(id)\">/topic/\(id)</a>"
-              } else {
-                return "[topic]" + idStr + "[/topic]"
-              }
-            } else {
-              let text = n.renderChildren(args)
-              if let id = UInt32(n.attr) {
-                return "<a href=\"/topic/\(id)\">\(text)</a>"
-              } else {
-                return "[topic=\(n.escapedAttr)]\(text)[/topic]"
-              }
-            }
-          })
+          }
+        )
       ),
       (
         "b", .bold,
@@ -827,11 +759,12 @@ public class BBCode {
           allowedChildren: [.br, .italic, .delete, .underline, .url], allowAttr: false,
           isBlock: false,
           render: { (n: DOMNode, args: [String: Any]?) in
-            var html: String = "<b>"
+            var html: String = "<strong>"
             html.append(n.renderChildren(args))
-            html.append("</b>")
+            html.append("</strong>")
             return html
-          })
+          }
+        )
       ),
       (
         "i", .italic,
@@ -840,11 +773,12 @@ public class BBCode {
           allowedChildren: [.br, .bold, .delete, .underline, .url], allowAttr: false,
           isBlock: false,
           render: { (n: DOMNode, args: [String: Any]?) in
-            var html: String = "<i>"
+            var html: String = "<em>"
             html.append(n.renderChildren(args))
-            html.append("</i>")
+            html.append("</em>")
             return html
-          })
+          }
+        )
       ),
       (
         "u", .underline,
@@ -856,10 +790,11 @@ public class BBCode {
             html.append(n.renderChildren(args))
             html.append("</u>")
             return html
-          })
+          }
+        )
       ),
       (
-        "del", .delete,
+        "s", .delete,
         TagDescription(
           tagNeeded: true, isSelfClosing: false,
           allowedChildren: [.br, .bold, .italic, .underline, .url], allowAttr: false,
@@ -869,7 +804,8 @@ public class BBCode {
             html.append(n.renderChildren(args))
             html.append("</del>")
             return html
-          })
+          }
+        )
       ),
       (
         "color", .color,
@@ -883,8 +819,9 @@ public class BBCode {
             } else {
               var valid = false
               if [
-                "black", "green", "silver", "gray", "olive", "white", "yellow", "maroon", "navy",
-                "red", "blue", "purple", "teal", "fuchsia", "aqua",
+                "black", "green", "silver", "gray", "olive", "white", "yellow", "orange", "maroon",
+                "navy", "red", "blue", "purple", "teal", "fuchsia", "aqua", "violet", "pink",
+                "lime", "magenta", "brown",
               ].contains(n.attr) {
                 valid = true
               } else {
@@ -905,7 +842,6 @@ public class BBCode {
                   }
                 }
               }
-
               if valid {
                 html = "<span style=\"color: \(n.attr)\">\(n.renderChildren(args))</span>"
               } else {
@@ -913,47 +849,51 @@ public class BBCode {
               }
             }
             return html
-          })
+          }
+        )
       ),
       (
-        "h", .header,
+        "size", .size,
         TagDescription(
           tagNeeded: true, isSelfClosing: false,
-          allowedChildren: [.br, .bold, .italic, .underline, .delete, .url], allowAttr: false,
+          allowedChildren: [.bold, .italic, .underline], allowAttr: true, isBlock: false,
+          render: { (n: DOMNode, args: [String: Any]?) in
+            var html: String
+            if n.attr.isEmpty {
+              html = "<span style=\"color: black\">\(n.renderChildren(args))</span>"
+            } else {
+              var valid = false
+              let size = Int(n.attr)
+              if size != nil {
+                valid = true
+              }
+              if valid {
+                html = "<span style=\"font-size: \(n.attr)px\">\(n.renderChildren(args))</span>"
+              } else {
+                html = "[size=\(n.escapedAttr)]\(n.renderChildren(args))[/size]"
+              }
+            }
+            return html
+          }
+        )
+      ),
+      (
+        "mask", .mask,
+        TagDescription(
+          tagNeeded: true, isSelfClosing: false,
+          allowedChildren: [.br, .bold, .delete, .underline], allowAttr: false,
           isBlock: false,
           render: { (n: DOMNode, args: [String: Any]?) in
-            var html: String = "</p><h5>"
+            var html: String =
+              "<span style=\"background-color: #555; color: #555; border: 1px solid #555;\">"
             html.append(n.renderChildren(args))
-            html.append("</h5><p>")
+            html.append("</span>")
             return html
-          })
+          }
+        )
       ),
     ]
     let smilies: [(String, String)] = [
-      ("傻笑", "haku-simper.png"),
-      ("賣萌", "haku-cute.png"),
-      ("哭", "haku-cry.png"),
-      ("嗝屁", "haku-die.png"),
-      ("壞笑", "haku-smirk.png"),
-      ("害羞", "haku-shy.png"),
-      ("微笑", "haku-smile.png"),
-      ("驚訝", "haku-suprise.png"),
-      ("憤怒", "haku-anger.png"),
-      ("暈", "haku-dizzy.png"),
-      ("有愛", "haku-love.png"),
-      ("汗", "haku-embarrassed.png"),
-      ("流鼻血", "haku-nosebleeds.png"),
-      ("漠然", "haku-indifferently.png"),
-      ("生病", "haku-sick.png"),
-      ("瞌睡", "haku-sleepy.png"),
-      ("被炸", "haku-bombed.png"),
-      ("被雷", "haku-shock.png"),
-      ("裝酷", "haku-cool.png"),
-      ("大笑", "haku-laugh.png"),
-      ("靈感", "haku-idea.png"),
-      ("疑惑", "haku-confused.png"),
-      ("警惕", "haku-guard.png"),
-      // Simplifyed Chinese
       ("卖萌", "haku-cute.png"),
       ("坏笑", "haku-smirk.png"),
       ("惊讶", "haku-suprise.png"),
