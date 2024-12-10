@@ -699,7 +699,7 @@ public class BBCode {
               if n.attr.isEmpty {
                 html = "<span class=\"postimg\"><img src=\"\(safeLink)\" alt=\"\" /></span>"
               } else {
-                let values = n.attr.components(separatedBy: ",").flatMap { Int($0) }
+                let values = n.attr.components(separatedBy: ",").compactMap { Int($0) }
                 if values.count == 2 && values[0] > 0 && values[0] <= 4096 && values[1] > 0
                   && values[1] <= 4096
                 {
@@ -731,7 +731,7 @@ public class BBCode {
                 html =
                   "<span class=\"postimg\"><video src=\"\(safeLink)\" autoplay loop muted><a href=\"\(safeLink)\">Download</a></video></span>"
               } else {
-                let values = n.attr.components(separatedBy: ",").flatMap { Int($0) }
+                let values = n.attr.components(separatedBy: ",").compactMap { Int($0) }
                 if values.count == 2 && values[0] > 0 && values[0] <= 4096 && values[1] > 0
                   && values[1] <= 4096
                 {

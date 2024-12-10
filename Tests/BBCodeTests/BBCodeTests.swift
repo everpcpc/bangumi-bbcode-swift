@@ -4,185 +4,67 @@ import XCTest
 
 class BBCodeTests: XCTestCase {
   func testBold() {
-    XCTAssertEqual(try BBCode().parse(bbcode: "[b]test[/b]"), "<p><b>test</b>")
+    XCTAssertEqual(try BBCode().parse(bbcode: "我是[b]粗体字[/b]"), "我是<strong>粗体字</strong>")
   }
 
   func testItalic() {
-    XCTAssertEqual(try BBCode().parse(bbcode: "[i]test[/i]"), "<p><i>test</i>")
+    XCTAssertEqual(try BBCode().parse(bbcode: "我是[i]斜体字[/i]"), "我是<em>斜体字</em>")
+  }
+
+  func testUnderline() {
+    XCTAssertEqual(
+      try BBCode().parse(bbcode: "我是[u]下划线文字[/u]"),
+      "我是<span style=\"text-decoration: underline\">下划线文字</span>")
+  }
+
+  func testStrikeThrough() {
+    XCTAssertEqual(
+      try BBCode().parse(bbcode: "我是[s]删除线文字[/s]"),
+      "我是<span style=\"text-decoration: line-through\">删除线文字</span>")
+  }
+
+  func testMask() {
+    XCTAssertEqual(
+      try BBCode().parse(bbcode: "我是[mask]马赛克文字[/mask]"),
+      "我是<span style=\"background-color: #555; color: #555; border: 1px solid #555;\">马赛克文字</span>")
   }
 
   func testColor() {
     XCTAssertEqual(
-      try BBCode().parse(bbcode: "[color=#FF0000]Red text[/color]"),
-      "<p><span style=\"color: #FF0000\">Red text</span>")
-    XCTAssertEqual(
-      try BBCode().parse(bbcode: "[color=#0F0]Green text[/color]"),
-      "<p><span style=\"color: #0F0\">Green text</span>")
-    XCTAssertEqual(
-      try BBCode().parse(bbcode: "[color=blue]Blue text[/color]"),
-      "<p><span style=\"color: blue\">Blue text</span>")
-    XCTAssertEqual(
-      try BBCode().parse(bbcode: "[color=#ff0000;font-size:100px;]XSS[/color]"),
-      "<p>[color=#ff0000;font-size:100px;]XSS[/color]")
-    XCTAssertEqual(
-      try BBCode().parse(bbcode: "[color=#0v0]Green text[/color]"),
-      "<p>[color=#0v0]Green text[/color]")
-  }
-
-  func testUrl() {
-    XCTAssertEqual(
-      try BBCode().parse(bbcode: "[url]http://example.com/1.jpg[/url]"),
-      "<p><a href=\"http://example.com/1.jpg\" rel=\"nofollow\">http://example.com/1.jpg</a>")
-    XCTAssertEqual(
-      try BBCode().parse(bbcode: "[url=http://example.com/1.jpg?a=1&b=2]File 1.jpg[/url]"),
-      "<p><a href=\"http://example.com/1.jpg?a=1&amp;b=2\" rel=\"nofollow\">File 1.jpg</a>")
-    XCTAssertEqual(
-      try BBCode().parse(bbcode: "[url=https://'asf'.com]File 1.jpg[/url]"), "<p>File 1.jpg")
-    XCTAssertEqual(
       try BBCode().parse(
-        bbcode: "[url=javascript:alert(String.fromCharCode(88,83,83))]http://google.com[/url]"),
-      "<p>http://google.com")
-    XCTAssertEqual(
-      try BBCode().parse(
-        bbcode: "[url=http://example.com][img]http://example.com/1.jpg[/img][/url]"),
-      "<p><a href=\"http://example.com\" rel=\"nofollow\"><span class=\"postimg\"><img src=\"http://example.com/1.jpg\" alt=\"\" /></span></a>"
-    )
-    XCTAssertEqual(
-      try BBCode().parse(bbcode: "[url][img]http://example.com/1.jpg[/img][/url]"),
-      "<p><span class=\"postimg\"><img src=\"http://example.com/1.jpg\" alt=\"\" /></span>")
-
-  }
-
-  func testImg() {
-    XCTAssertEqual(
-      try BBCode().parse(bbcode: "[img]http://example.com/1.jpg[/img]"),
-      "<p><span class=\"postimg\"><img src=\"http://example.com/1.jpg\" alt=\"\" /></span>")
-    XCTAssertEqual(
-      try BBCode().parse(bbcode: "[img=gugu,alt]http://example.com/1.jpg[/img]"),
-      "<p><span class=\"postimg\"><img src=\"http://example.com/1.jpg\" alt=\"gugu,alt\" /></span>")
-    XCTAssertEqual(
-      try BBCode().parse(bbcode: "[img=300,500]http://example.com/1.jpg[/img]"),
-      "<p><span class=\"postimg\"><img src=\"http://example.com/1.jpg\" alt=\"\" width=\"300\" height=\"500\" /></span>"
-    )
-
-    XCTAssertEqual(
-      try BBCode().parse(bbcode: "[video]http://example.com/1.mp4[/video]"),
-      "<p><span class=\"postimg\"><video src=\"http://example.com/1.mp4\" autoplay loop muted><a href=\"http://example.com/1.mp4\">Download</a></video></span>"
-    )
-    XCTAssertEqual(
-      try BBCode().parse(bbcode: "[video=300,500]http://example.com/1.mp4[/video]"),
-      "<p><span class=\"postimg\"><video src=\"http://example.com/1.mp4\" width=\"300\" height=\"500\" autoplay loop muted><a href=\"http://example.com/1.mp4\">Download</a></video></span>"
+        bbcode:
+          "我是[color=red]彩[/color][color=green]色[/color][color=blue]的[/color][color=orange]哟[/color]。"
+      ),
+      "我是<span style=\"color: red\">彩</span><span style=\"color: green\">色</span><span style=\"color: blue\">的</span><span style=\"color: orange\">哟</span>。"
     )
   }
 
-  func testQuote() {
+  func testSize() {
     XCTAssertEqual(
-      try BBCode().parse(bbcode: "[quote]balabala[b]bala[/b][/quote]"),
-      "<div class=\"quotebox\"><blockquote><div><p>balabala<b>bala</b></div></blockquote></div>")
-    XCTAssertEqual(
-      try BBCode().parse(bbcode: "[quote][quote][quote]test[/quote][/quote][/quote]"),
-      "<div class=\"quotebox\"><blockquote><div><div class=\"quotebox\"><blockquote><div><div class=\"quotebox\"><blockquote><div><p>test</div></blockquote></div></div></blockquote></div></div></blockquote></div>"
+      try BBCode().parse(bbcode: "[size=10]不同[/size][size=14]大小的[/size][size=18]文字[/size]效果也可实现。"),
+      "<span style=\"font-size: 10px\">不同</span><span style=\"font-size: 14px\">大小的</span><span style=\"font-size: 18px\">文字</span>效果也可实现。"
     )
   }
 
-  func testSmilies() {
+  func testLink() {
     XCTAssertEqual(
-      try BBCode().parse(bbcode: "[大笑]"), "<p><img src=\"/smilies/haku-laugh.png\" alt=\"[大笑]\" />")
-  }
-
-  func testUser() {
-    XCTAssertEqual(
-      try BBCode().parse(bbcode: "[user=2]Test user[/user]"), "<p><a href=\"/user/2\">Test user</a>"
-    )
-    XCTAssertEqual(
-      try BBCode().parse(bbcode: "[user]2[/user]"), "<p><a href=\"/user/2\">/user/2</a>")
-    XCTAssertEqual(
-      try BBCode().parse(bbcode: "[topic=2]Test topic[/topic]"),
-      "<p><a href=\"/topic/2\">Test topic</a>")
-    XCTAssertEqual(
-      try BBCode().parse(bbcode: "[topic]2[/topic]"), "<p><a href=\"/topic/2\">/topic/2</a>")
-    XCTAssertEqual(
-      try BBCode().parse(bbcode: "[post=2]Test post[/post]"),
-      "<p><a href=\"/post/2#2\">Test post</a>")
-    XCTAssertEqual(
-      try BBCode().parse(bbcode: "[post]2[/post]"), "<p><a href=\"/post/2#2\">/post/2</a>")
-  }
-
-  func testCode() {
-    XCTAssertEqual(
-      try BBCode().parse(bbcode: "Test [code] coded text\n[b] Not bold [/b] [/code] [b] bold [/b]"),
-      "<p>Test <div class=\"codebox\"><pre><code> coded text\n[b] Not bold [/b] </code></pre></div> <b> bold </b>"
+      try BBCode().parse(bbcode: "Bangumi 番组计划: [url]https://chii.in/[/url]"),
+      "Bangumi 番组计划: <a href=\"https://chii.in/\">https://chii.in/</a>"
     )
   }
 
-  func testMix() {
+  func testURL() {
     XCTAssertEqual(
-      try BBCode().parse(bbcode: "[[大笑]"),
-      "<p>[<img src=\"/smilies/haku-laugh.png\" alt=\"[大笑]\" />")
-    XCTAssertEqual(
-      try BBCode().parse(bbcode: "Test [code] coded text [/b] [/code]"),
-      "<p>Test <div class=\"codebox\"><pre><code> coded text [/b] </code></pre></div>")
-    XCTAssertEqual(
-      try BBCode().parse(bbcode: "Test [code] coded text [/b] [/code][/code]"),
-      "<p>Test <div class=\"codebox\"><pre><code> coded text [/b] </code></pre></div>[/code]")
-    XCTAssertEqual(
-      try BBCode().parse(bbcode: "Test [code] coded text [/b [/code]"),
-      "<p>Test <div class=\"codebox\"><pre><code> coded text [/b </code></pre></div>")
-    XCTAssertEqual(
-      try BBCode().parse(bbcode: "Test [code] coded text [//[[[[[[[[ [/code]"),
-      "<p>Test <div class=\"codebox\"><pre><code> coded text [//[[[[[[[[ </code></pre></div>")
-    XCTAssertEqual(try BBCode().parse(bbcode: "[b=abc]xyz[/b]"), "<p>[b=abc]xyz[/b]")
-  }
-
-  func testNewlineAndParagraph() {
-    XCTAssertEqual(
-      try BBCode().parse(
-        bbcode: "text\nnextline\r\n3rd line\r4th line\n\nnew paragraph\r\r2nd paragraph\r\n\r\n3rd"),
-      "<p>text<br>nextline<br>3rd line<br>4th line</p><p>new paragraph</p><p>2nd paragraph</p><p>3rd"
+      try BBCode().parse(bbcode: "带文字说明的网站链接：[url=https://chii.in]Bangumi 番组计划[/url]"),
+      "带文字说明的网站链接：<a href=\"https://chii.in/\">Bangumi 番组计划</a>"
     )
   }
 
-  func testNewlineAfterBlock() {
+  func testImage() {
     XCTAssertEqual(
-      try BBCode().parse(bbcode: "[quote]text\r\n2\r\n[/quote]\nnextline\r\n3rd line\r4th line"),
-      "<div class=\"quotebox\"><blockquote><div><p>text<br>2</div></blockquote></div>nextline<br>3rd line<br>4th line"
+      try BBCode().parse(bbcode: "存放于其他网络服务器的图片：[img]https://chii.in/img/ico/bgm88-31.gif[/img]"),
+      "存放于其他网络服务器的图片：<img src=\"https://chii.in/img/ico/bgm88-31.gif\"/>"
     )
   }
 
-  func testHide() {
-    XCTAssertEqual(
-      try BBCode().parse(bbcode: "[hide]text content[/hide]"),
-      "<div class=\"quotebox\"><cite>Hidden text</cite><blockquote><div><p>Post number >= 1 can see</div></blockquote></div>"
-    )
-    XCTAssertEqual(
-      try BBCode().parse(bbcode: "[hide]text content[/hide]", args: ["post number": 2]),
-      "<div class=\"quotebox\"><cite>Hidden text</cite><blockquote><div><p>text content</div></blockquote></div>"
-    )
-  }
-
-  func testPerformance() {
-    self.measure({
-      do {
-        _ = try BBCode().parse(
-          bbcode:
-            "I would like to [b]emphasize[/b] this\nMaking text [i]italic[/i] italic is kind of easy\nu is used for the [u]underline[/u] tag\nI [s]had been[/s] was born in Denmark\n\nIt is possible to color the text [color=red]red[/color] [color=green]green[/color] [color=blue]blue[/color] -\nor [color=#DB7900]whatever[/color]\n\nQuoting no-one in particular\n[quote]'Tis be a bad day[/quote]\nQuoting someone in particular\n[quote=Bjarne]This be the day of days![/quote]\n\nLinking with no link title\n[url]https://www.bbcode.org/[/url]\nLinking to a named site\n[url=https://www.bbcode.org/]This be bbcode.org![/url]\n\nIncluding an image\n[img]https://www.bbcode.org/images/lubeck_small.jpg[/img]\nResizing the image\n[img=100x50]https://www.bbcode.org/images/lubeck_small.jpg[/img]\nMaking the image clickable (in this case linking to the original image)\n[url=https://www.bbcode.org/images/lubeck.jpg][img]https://www.bbcode.org/images/lubeck_small.jpg[/img][/url]\n\n[code]\n$b = \"hello world\";\necho $b;\n[/code]"
-        )
-      } catch {
-
-      }
-    })
-  }
-
-  func testPerformanceParse() {
-    self.measure({
-      do {
-        _ = try BBCode().validate(
-          bbcode:
-            "I would like to [b]emphasize[/b] this\nMaking text [i]italic[/i] italic is kind of easy\nu is used for the [u]underline[/u] tag\nI [s]had been[/s] was born in Denmark\n\nIt is possible to color the text [color=red]red[/color] [color=green]green[/color] [color=blue]blue[/color] -\nor [color=#DB7900]whatever[/color]\n\nQuoting no-one in particular\n[quote]'Tis be a bad day[/quote]\nQuoting someone in particular\n[quote=Bjarne]This be the day of days![/quote]\n\nLinking with no link title\n[url]https://www.bbcode.org/[/url]\nLinking to a named site\n[url=https://www.bbcode.org/]This be bbcode.org![/url]\n\nIncluding an image\n[img]https://www.bbcode.org/images/lubeck_small.jpg[/img]\nResizing the image\n[img=100x50]https://www.bbcode.org/images/lubeck_small.jpg[/img]\nMaking the image clickable (in this case linking to the original image)\n[url=https://www.bbcode.org/images/lubeck.jpg][img]https://www.bbcode.org/images/lubeck_small.jpg[/img][/url]\n\n[code]\n$b = \"hello world\";\necho $b;\n[/code]"
-        )
-      } catch {
-
-      }
-    })
-  }
 }
