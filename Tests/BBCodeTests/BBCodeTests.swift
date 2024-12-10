@@ -68,21 +68,21 @@ class BBCodeTests: XCTestCase {
   func testLink() {
     XCTAssertEqual(
       try BBCode().parse(bbcode: "Bangumi 番组计划: [url]https://chii.in/[/url]"),
-      "Bangumi 番组计划: <a href=\"https://chii.in/\" rel=\"nofollow\">https://chii.in/</a>"
+      "Bangumi 番组计划: <a href=\"https://chii.in/\" target=\"_blank\" rel=\"nofollow external noopener noreferrer\">https://chii.in/</a>"
     )
   }
 
   func testURL() {
     XCTAssertEqual(
       try BBCode().parse(bbcode: "带文字说明的网站链接：[url=https://chii.in]Bangumi 番组计划[/url]"),
-      "带文字说明的网站链接：<a href=\"https://chii.in\" rel=\"nofollow\">Bangumi 番组计划</a>"
+      "带文字说明的网站链接：<a href=\"https://chii.in\" target=\"_blank\" rel=\"nofollow external noopener noreferrer\">Bangumi 番组计划</a>"
     )
   }
 
   func testImage() {
     XCTAssertEqual(
       try BBCode().parse(bbcode: "存放于其他网络服务器的图片：[img]https://chii.in/img/ico/bgm88-31.gif[/img]"),
-      "存放于其他网络服务器的图片：<img src=\"https://chii.in/img/ico/bgm88-31.gif\" alt=\"\" />"
+      "存放于其他网络服务器的图片：<img src=\"https://chii.in/img/ico/bgm88-31.gif\" rel=\"noreferrer\" referrerpolicy=\"no-referrer\" alt=\"\" />"
     )
   }
 

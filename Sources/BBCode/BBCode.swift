@@ -701,7 +701,8 @@ public class BBCode {
               if isPlain {
                 link = n.renderChildren(args)
                 if let safeLink = safeUrl(url: link, defaultScheme: scheme, defaultHost: host) {
-                  html = "<a href=\"\(link)\" rel=\"nofollow\">\(safeLink)</a>"
+                  html =
+                    "<a href=\"\(link)\" target=\"_blank\" rel=\"nofollow external noopener noreferrer\">\(safeLink)</a>"
                 } else {
                   html = link
                 }
@@ -711,7 +712,8 @@ public class BBCode {
             } else {
               link = n.escapedAttr
               if let safeLink = safeUrl(url: link, defaultScheme: scheme, defaultHost: host) {
-                html = "<a href=\"\(safeLink)\" rel=\"nofollow\">\(n.renderChildren(args))</a>"
+                html =
+                  "<a href=\"\(safeLink)\" target=\"_blank\" rel=\"nofollow external noopener noreferrer\">\(n.renderChildren(args))</a>"
               } else {
                 html = n.renderChildren(args)
               }
@@ -732,17 +734,18 @@ public class BBCode {
             let link: String = n.renderChildren(args)
             if let safeLink = safeUrl(url: link, defaultScheme: scheme, defaultHost: host) {
               if n.attr.isEmpty {
-                html = "<img src=\"\(safeLink)\" alt=\"\" />"
+                html =
+                  "<img src=\"\(safeLink)\" rel=\"noreferrer\" referrerpolicy=\"no-referrer\" alt=\"\" />"
               } else {
                 let values = n.attr.components(separatedBy: ",").compactMap { Int($0) }
                 if values.count == 2 && values[0] > 0 && values[0] <= 4096 && values[1] > 0
                   && values[1] <= 4096
                 {
                   html =
-                    "<img src=\"\(safeLink)\" alt=\"\" width=\"\(values[0])\" height=\"\(values[1])\" />"
+                    "<img src=\"\(safeLink)\" rel=\"noreferrer\" referrerpolicy=\"no-referrer\" alt=\"\" width=\"\(values[0])\" height=\"\(values[1])\" />"
                 } else {
                   html =
-                    "<img src=\"\(safeLink)\" alt=\"\(n.escapedAttr)\" />"
+                    "<img src=\"\(safeLink)\" rel=\"noreferrer\" referrerpolicy=\"no-referrer\" alt=\"\(n.escapedAttr)\" />"
                 }
               }
               return html
