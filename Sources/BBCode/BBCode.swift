@@ -141,7 +141,7 @@ enum BBType: Int {
   case paragraphStart, paragraphEnd
   case quote, code, url, image, center, left, right
   case bold, italic, underline, delete, color, size, mask
-  case smilies  // one to many
+  case smilies
 }
 
 class TagManager {
@@ -179,9 +179,6 @@ class TagManager {
   }
 
   func getInfo(type: BBType) -> TagInfo? {
-    if type == .smilies {
-      return nil
-    }
     for tag in tags {
       if tag.1 == type {
         return tag
@@ -254,6 +251,8 @@ func contentParser(g: inout USIterator, worker: Worker) -> Parser? {
         } else {
           newNode.value.append(Character(c))
         }
+      } else if c == "(" {  // <smilies>
+        return smilies_parser
       } else {  // <content>
         newNode.value.append(Character(c))
       }
@@ -268,6 +267,7 @@ func tagParser(g: inout USIterator, worker: Worker) -> Parser? {
   let newNode: DOMNode = newDOMNode(
     type: .unknow, parent: worker.currentNode, tagManager: worker.tagManager)
   worker.currentNode.children.append(newNode)
+
   var index: Int = 0
   let tagNameMaxLength: Int = 8
   var isFirst: Bool = true
@@ -342,6 +342,12 @@ func tagParser(g: inout USIterator, worker: Worker) -> Parser? {
   return nil
 }
 
+func restoreNodeToPlain(node: DOMNode, c: UnicodeScalar, worker: Worker) {
+  node.setTag(tag: worker.tagManager.getInfo(type: .plain)!)
+  node.value.insert(Character(UnicodeScalar(91)), at: node.value.startIndex)
+  node.value.append(Character(c))
+}
+
 func attrParser(g: inout USIterator, worker: Worker) -> Parser? {
   while let c = g.next() {
     if c == "]" {
@@ -389,7 +395,6 @@ func tagClosingParser(g: inout USIterator, worker: Worker) -> Parser? {
           type: .plain, parent: worker.currentNode, tagManager: worker.tagManager)
         newNode.value = "[/" + tagName + "]"
         worker.currentNode.children.append(newNode)
-
         return content_parser
       }
     } else if c == "[" {
@@ -416,9 +421,57 @@ func tagClosingParser(g: inout USIterator, worker: Worker) -> Parser? {
   return nil
 }
 
-func restoreNodeToPlain(node: DOMNode, c: UnicodeScalar, worker: Worker) {
+func smiliesParser(g: inout USIterator, worker: Worker) -> Parser? {
+  let newNode: DOMNode = newDOMNode(
+    type: .unknow, parent: worker.currentNode, tagManager: worker.tagManager)
+  worker.currentNode.children.append(newNode)
+
+  var index: Int = 0
+  let smiliesNameMaxLength: Int = 8
+  let smiliesRegex = try! Regex(#"bgm(?<id>\d+)"#, as: (Substring, id: Substring).self)
+  while let c = g.next() {
+    if c == ")" {
+      if newNode.value.isEmpty {
+        restoreSmiliesToPlain(node: newNode, c: c, worker: worker)
+        return content_parser
+      }
+      if let match = newNode.value.wholeMatch(of: smiliesRegex) {
+        let bgmId = Int(match.id) ?? 0
+        if bgmId < 24 || bgmId > 125 {
+          restoreSmiliesToPlain(node: newNode, c: c, worker: worker)
+          return content_parser
+        }
+        let newNode: DOMNode = newDOMNode(
+          type: .smilies,
+          parent: worker.currentNode, tagManager: worker.tagManager)
+        worker.currentNode.children.append(newNode)
+        newNode.value = "bgm"
+        newNode.attr = String(bgmId)
+        newNode.setTag(tag: worker.tagManager.getInfo(type: .smilies)!)
+        return content_parser
+      } else {
+        restoreSmiliesToPlain(node: newNode, c: c, worker: worker)
+        return content_parser
+      }
+    } else {
+      if index < smiliesNameMaxLength {
+        newNode.value.append(Character(c))
+      } else {
+        restoreSmiliesToPlain(node: newNode, c: c, worker: worker)
+        return content_parser
+      }
+    }
+    index = index + 1
+  }
+
+  worker.error = BBCodeError.unfinishedClosingTag(
+    unclosedTagDetail(unclosedNode: worker.currentNode))
+  return nil
+}
+
+func restoreSmiliesToPlain(node: DOMNode, c: UnicodeScalar, worker: Worker) {
   node.setTag(tag: worker.tagManager.getInfo(type: .plain)!)
-  node.value.insert(Character(UnicodeScalar(91)), at: node.value.startIndex)
+  node.value.insert(Character(UnicodeScalar(40)), at: node.value.startIndex)
   node.value.append(Character(c))
 }
 
@@ -532,6 +585,7 @@ let content_parser: Parser = Parser(parse: contentParser)
 let tag_parser: Parser = Parser(parse: tagParser)
 let tag_close_parser: Parser = Parser(parse: tagClosingParser)
 let attr_parser: Parser = Parser(parse: attrParser)
+let smilies_parser: Parser = Parser(parse: smiliesParser)
 
 public class BBCode {
 
@@ -893,28 +947,21 @@ public class BBCode {
           }
         )
       ),
+      (
+        "bgm", .smilies,
+        TagDescription(
+          tagNeeded: true, isSelfClosing: true,
+          allowedChildren: nil, allowAttr: true,
+          isBlock: false,
+          render: { (n: DOMNode, args: [String: Any]?) in
+            let bgmId = Int(n.attr) ?? 24
+            let iconId = String(format: "%02d", bgmId - 23)
+            return
+              "<img src=\"https://lain.bgm.tv/img/smiles/tv/\(iconId).gif\" alt=\"(bgm\(bgmId))\" />"
+          }
+        )
+      ),
     ]
-    let smilies: [(String, String)] = [
-      ("卖萌", "haku-cute.png"),
-      ("坏笑", "haku-smirk.png"),
-      ("惊讶", "haku-suprise.png"),
-      ("愤怒", "haku-anger.png"),
-      ("晕", "haku-dizzy.png"),
-      ("有爱", "haku-love.png"),
-      ("灵感", "haku-idea.png"),
-    ]
-    for emote in smilies {
-      tags.append(
-        (
-          emote.0, .smilies,
-          TagDescription(
-            tagNeeded: true, isSelfClosing: true, allowedChildren: nil, allowAttr: false,
-            isBlock: false,
-            render: { (n: DOMNode, args: [String: Any]?) in
-              return "<img src=\"/smilies/\(emote.1)\" alt=\"[\(emote.0)]\" />"
-            })
-        ))
-    }
 
     // Create .root description
     let rootDescription = TagDescription(

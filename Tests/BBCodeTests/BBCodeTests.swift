@@ -100,4 +100,11 @@ class BBCodeTests: XCTestCase {
     )
   }
 
+  func testSmilies() {
+    XCTAssertEqual(
+      try BBCode().parse(bbcode: "表情符号：(bgm38)"),
+      "表情符号：<img src=\"https://lain.bgm.tv/img/smiles/tv/15.gif\" alt=\"(bgm38)\" />"
+    )
+  }
+
 }

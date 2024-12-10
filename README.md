@@ -24,3 +24,4 @@ from: https://github.com/shiningdracon/BBCode-Swift
 - [ ] photo
 - [ ] email
 - [ ] user
+- [x] smilies
