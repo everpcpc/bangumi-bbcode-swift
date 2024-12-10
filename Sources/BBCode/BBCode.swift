@@ -670,12 +670,13 @@ public class BBCode {
       (
         "code", .code,
         TagDescription(
-          tagNeeded: true, isSelfClosing: false, allowedChildren: nil, allowAttr: false,
+          tagNeeded: true, isSelfClosing: false,
+          allowedChildren: nil, allowAttr: false,
           isBlock: true,
           render: { (n: DOMNode, args: [String: Any]?) in
-            var html = "<div class=\"codebox\"><pre><code>"
+            var html = "<pre><code>"
             html.append(n.renderChildren(args))
-            html.append("</code></pre></div>")
+            html.append("</code></pre>")
             return html
           }
         )

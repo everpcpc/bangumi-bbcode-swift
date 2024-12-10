@@ -86,4 +86,11 @@ class BBCodeTests: XCTestCase {
     )
   }
 
+  func testCode() {
+    XCTAssertEqual(
+      try BBCode().parse(bbcode: "代码片段：[code]print(\"Hello, World!\")[/code]"),
+      "代码片段：<pre><code>print(&quot;Hello, World!&quot;)</code></pre>"
+    )
+  }
+
 }

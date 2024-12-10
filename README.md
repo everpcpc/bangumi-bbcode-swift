@@ -18,10 +18,10 @@ from: https://github.com/shiningdracon/BBCode-Swift
 - [x] center
 - [x] left
 - [x] right
+- [x] code
 - [ ] indent
 - [ ] quote
 - [ ] subject
 - [ ] photo
-- [ ] code
 - [ ] email
 - [ ] user
