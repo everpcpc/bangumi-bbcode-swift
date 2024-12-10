@@ -19,8 +19,7 @@ from: https://github.com/shiningdracon/BBCode-Swift
 - [x] left
 - [x] right
 - [x] code
-- [ ] indent
-- [ ] quote
+- [x] quote
 - [ ] subject
 - [ ] photo
 - [ ] email

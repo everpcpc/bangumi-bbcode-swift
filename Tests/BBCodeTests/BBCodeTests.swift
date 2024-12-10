@@ -89,7 +89,14 @@ class BBCodeTests: XCTestCase {
   func testCode() {
     XCTAssertEqual(
       try BBCode().parse(bbcode: "代码片段：[code]print(\"Hello, World!\")[/code]"),
-      "代码片段：<pre><code>print(&quot;Hello, World!&quot;)</code></pre>"
+      "代码片段：<div class=\"code\"><pre><code>print(&quot;Hello, World!&quot;)</code></pre></div>"
+    )
+  }
+
+  func testQuote() {
+    XCTAssertEqual(
+      try BBCode().parse(bbcode: "引用文字：[quote]这是一段引用文字[/quote]"),
+      "引用文字：<div class=\"quote\"><blockquote><p>这是一段引用文字</p></blockquote></div>"
     )
   }
 

@@ -588,29 +588,6 @@ public class BBCode {
         )
       ),
       (
-        "quote", .quote,
-        TagDescription(
-          tagNeeded: true, isSelfClosing: false,
-          allowedChildren: [
-            .br, .bold, .italic, .underline, .delete, .color, .mask, .size, .quote, .code, .url,
-            .image, .smilies,
-          ],
-          allowAttr: true,
-          isBlock: true,
-          render: { (n: DOMNode, args: [String: Any]?) in
-            var html: String
-            if n.attr.isEmpty {
-              html = "<div class=\"quotebox\"><blockquote><div>"
-            } else {
-              html = "<div class=\"quotebox\"><cite>\(n.escapedAttr)</cite><blockquote><div>"
-            }
-            html.append(n.renderChildren(args))
-            html.append("</div></blockquote></div>")
-            return html
-          }
-        )
-      ),
-      (
         "center", .center,
         TagDescription(
           tagNeeded: true, isSelfClosing: false,
@@ -674,9 +651,29 @@ public class BBCode {
           allowedChildren: nil, allowAttr: false,
           isBlock: true,
           render: { (n: DOMNode, args: [String: Any]?) in
-            var html = "<pre><code>"
+            var html = "<div class=\"code\"><pre><code>"
             html.append(n.renderChildren(args))
-            html.append("</code></pre>")
+            html.append("</code></pre></div>")
+            return html
+          }
+        )
+      ),
+      (
+        "quote", .quote,
+        TagDescription(
+          tagNeeded: true, isSelfClosing: false,
+          allowedChildren: [
+            .br, .bold, .italic, .underline, .delete,
+            .color, .mask, .size, .quote, .code, .url,
+            .image, .smilies,
+          ],
+          allowAttr: false,
+          isBlock: true,
+          render: { (n: DOMNode, args: [String: Any]?) in
+            var html: String
+            html = "<div class=\"quote\"><blockquote><p>"
+            html.append(n.renderChildren(args))
+            html.append("</p></blockquote></div>")
             return html
           }
         )
