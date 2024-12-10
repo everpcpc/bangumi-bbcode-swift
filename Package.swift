@@ -4,14 +4,13 @@
 import PackageDescription
 
 let package = Package(
-    name: "BBCode",
-    products: [
-        .library(name: "BBCode", targets: ["BBCode"])
-    ],
-    dependencies: [],
-    targets: [
-        .target(name: "BBCode"),
-        .testTarget(name: "BBCodeTests", dependencies: ["BBCode"])
-    ]
+  name: "BBCode",
+  products: [
+    .library(name: "BBCode", targets: ["BBCode"])
+  ],
+  dependencies: [],
+  targets: [
+    .target(name: "BBCode"),
+    .testTarget(name: "BBCodeTests", dependencies: ["BBCode"]),
+  ]
 )
-
