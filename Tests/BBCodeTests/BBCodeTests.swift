@@ -96,7 +96,7 @@ class BBCodeTests: XCTestCase {
   func testQuote() {
     XCTAssertEqual(
       try BBCode().parse(bbcode: "引用文字：[quote]这是一段引用文字[/quote]"),
-      "引用文字：<div class=\"quote\"><blockquote><p>这是一段引用文字</p></blockquote></div>"
+      "引用文字：<div class=\"quote\"><blockquote>这是一段引用文字</blockquote></div>"
     )
   }
 

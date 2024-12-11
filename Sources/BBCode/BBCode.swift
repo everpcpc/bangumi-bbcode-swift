@@ -725,9 +725,9 @@ public class BBCode {
           isBlock: true,
           render: { (n: DOMNode, args: [String: Any]?) in
             var html: String
-            html = "<div class=\"quote\"><blockquote><p>"
+            html = "<div class=\"quote\"><blockquote>"
             html.append(n.renderChildren(args))
-            html.append("</p></blockquote></div>")
+            html.append("</blockquote></div>")
             return html
           }
         )
