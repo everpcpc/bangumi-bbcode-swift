@@ -940,7 +940,7 @@ public class BBCode {
           isBlock: false,
           render: { (n: DOMNode, args: [String: Any]?) in
             var html: String =
-              "<span style=\"background-color: #555; color: #555; border: 1px solid #555;\">"
+              "<span class=\"mask\">"
             html.append(n.renderChildren(args))
             html.append("</span>")
             return html

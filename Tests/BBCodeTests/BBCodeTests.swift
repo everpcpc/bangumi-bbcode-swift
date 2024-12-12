@@ -45,7 +45,7 @@ class BBCodeTests: XCTestCase {
   func testMask() {
     XCTAssertEqual(
       try BBCode().parse(bbcode: "我是[mask]马赛克文字[/mask]"),
-      "我是<span style=\"background-color: #555; color: #555; border: 1px solid #555;\">马赛克文字</span>")
+      "我是<span class=\"mask\">马赛克文字</span>")
   }
 
   func testColor() {
