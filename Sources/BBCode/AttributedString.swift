@@ -1,10 +1,19 @@
 #if os(iOS)
   import SwiftUI
 
-  extension AttributedString {
-    init(bbcode: String) {
-      // TODO:
-      self = AttributedString(bbcode)
+  extension BBCode {
+    public func attr(_ bbcode: String, args: [String: Any]? = nil)
+      -> AttributedString
+    {
+      // let worker: Worker = Worker(tagManager: tagManager)
+
+      // if let domTree = worker.parse(bbcode) {
+      //   handleNewlineAndParagraph(node: domTree, tagManager: tagManager)
+      //   return (domTree.description!.render!(domTree, args))
+      // } else {
+      //   throw worker.error!
+      // }
+      return AttributedString(bbcode)
     }
   }
 
@@ -31,7 +40,7 @@
       """
     ScrollView {
       Divider()
-      Text(AttributedString(bbcode: example))
+      Text(BBCode().attr(example))
       Divider()
     }
   }
