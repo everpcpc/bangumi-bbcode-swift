@@ -240,7 +240,7 @@ func contentParser(g: inout USIterator, worker: Worker) -> Parser? {
     } else {
       lastWasCR = false
 
-      if c == "[" {  // <tag_start>
+      if c == UnicodeScalar("[") {  // <tag_start>
         if worker.currentNode.description?.allowedChildren != nil {
           if newNode.value.isEmpty {
             worker.currentNode.children.removeLast()
@@ -251,7 +251,7 @@ func contentParser(g: inout USIterator, worker: Worker) -> Parser? {
         } else {
           newNode.value.append(Character(c))
         }
-      } else if c == "(" {  // <smilies>
+      } else if c == UnicodeScalar("(") {  // <smilies>
         return smilies_parser
       } else {  // <content>
         newNode.value.append(Character(c))
@@ -273,7 +273,7 @@ func tagParser(g: inout USIterator, worker: Worker) -> Parser? {
   var isFirst: Bool = true
 
   while let c = g.next() {
-    if isFirst && c == "/" {
+    if isFirst && c == UnicodeScalar("/") {
       if !worker.currentNode.paired {
         //<closing_tag> ::= <tag_start> '/' <tag_name> <tag_end>
         worker.currentNode.children.removeLast()
@@ -283,7 +283,7 @@ func tagParser(g: inout USIterator, worker: Worker) -> Parser? {
         restoreNodeToPlain(node: newNode, c: c, worker: worker)
         return content_parser
       }
-    } else if c == "=" {
+    } else if c == UnicodeScalar("=") {
       //<opening_tag_2> ::= <tag_prefix> '=' <attr> <tag_end>
       if let tag = worker.tagManager.getInfo(str: newNode.value) {
         newNode.setTag(tag: tag)
@@ -299,7 +299,7 @@ func tagParser(g: inout USIterator, worker: Worker) -> Parser? {
       }
       restoreNodeToPlain(node: newNode, c: c, worker: worker)
       return content_parser
-    } else if c == "]" {
+    } else if c == UnicodeScalar("]") {
       //<tag> ::= <opening_tag_1> | <opening_tag> <content> <closing_tag>
       if let tag = worker.tagManager.getInfo(str: newNode.value) {
         newNode.setTag(tag: tag)
@@ -319,7 +319,7 @@ func tagParser(g: inout USIterator, worker: Worker) -> Parser? {
       }
       restoreNodeToPlain(node: newNode, c: c, worker: worker)
       return content_parser
-    } else if c == "[" {
+    } else if c == UnicodeScalar("[") {
       // illegal syntax, treat it as plain text, and restart tag parsing from this new position
       newNode.setTag(tag: worker.tagManager.getInfo(type: .plain)!)
       newNode.value.insert(Character(UnicodeScalar(91)), at: newNode.value.startIndex)
@@ -350,7 +350,7 @@ func restoreNodeToPlain(node: DOMNode, c: UnicodeScalar, worker: Worker) {
 
 func attrParser(g: inout USIterator, worker: Worker) -> Parser? {
   while let c = g.next() {
-    if c == "]" {
+    if c == UnicodeScalar("]") {
       return content_parser
     } else if c == UnicodeScalar(10) || c == UnicodeScalar(13) {
       worker.error = BBCodeError.unfinishedAttr(unclosedTagDetail(unclosedNode: worker.currentNode))
@@ -369,7 +369,7 @@ func tagClosingParser(g: inout USIterator, worker: Worker) -> Parser? {
   // <tag_name> <tag_end>
   var tagName: String = ""
   while let c = g.next() {
-    if c == "]" {
+    if c == UnicodeScalar("]") {
       if !tagName.isEmpty && tagName == worker.currentNode.value {
         worker.currentNode.paired = true
         guard let p = worker.currentNode.parent else {
@@ -397,14 +397,14 @@ func tagClosingParser(g: inout USIterator, worker: Worker) -> Parser? {
         worker.currentNode.children.append(newNode)
         return content_parser
       }
-    } else if c == "[" {
+    } else if c == UnicodeScalar("[") {
       // illegal syntax, treat it as plain text, and restart tag parsing from this new position
       let newNode: DOMNode = newDOMNode(
         type: .plain, parent: worker.currentNode, tagManager: worker.tagManager)
       newNode.value = "[/" + tagName
       worker.currentNode.children.append(newNode)
       return tag_parser
-    } else if c == "=" {
+    } else if c == UnicodeScalar("=") {
       // illegal syntax, treat it as plain text
       let newNode: DOMNode = newDOMNode(
         type: .plain, parent: worker.currentNode, tagManager: worker.tagManager)
@@ -430,7 +430,7 @@ func smiliesParser(g: inout USIterator, worker: Worker) -> Parser? {
   let smiliesNameMaxLength: Int = 8
   let smiliesRegex = try! Regex(#"bgm(?<id>\d+)"#, as: (Substring, id: Substring).self)
   while let c = g.next() {
-    if c == ")" {
+    if c == UnicodeScalar(")") {
       if newNode.value.isEmpty {
         restoreSmiliesToPlain(node: newNode, c: c, worker: worker)
         return content_parser
@@ -587,7 +587,7 @@ let tag_close_parser: Parser = Parser(parse: tagClosingParser)
 let attr_parser: Parser = Parser(parse: attrParser)
 let smilies_parser: Parser = Parser(parse: smiliesParser)
 
-public class BBCode {
+public class BBCodeHTMLParser {
 
   let tagManager: TagManager
 
