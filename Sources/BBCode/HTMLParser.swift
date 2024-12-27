@@ -591,7 +591,7 @@ func safeUrl(url: String, defaultScheme: String?, defaultHost: String?) -> Strin
   return nil
 }
 
-public class BBCodeHTMLParser {
+public class BBCodeParser {
 
   let tagManager: TagManager
 
