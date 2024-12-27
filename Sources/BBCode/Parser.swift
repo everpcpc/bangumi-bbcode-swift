@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 public enum BBCodeError: Error {
   case internalError(String)
@@ -26,7 +27,6 @@ public enum BBCodeError: Error {
   }
 }
 
-typealias Render = (Node, [String: Any]?) -> String
 typealias USIterator = String.UnicodeScalarView.Iterator
 
 protocol Parser {
@@ -38,23 +38,17 @@ class Node {
   weak var parent: Node? = nil
   private var tagType: BBType
   private var tagDescription: TagDescription? = nil
-  var type: BBType {
-    return tagType
-  }
-  var description: TagDescription? {
-    return tagDescription
-  }
+
   var value: String = ""
   var attr: String = ""
   var paired: Bool = true
 
-  var escapedValue: String {
-    // Only plain node value is directly usable in render, other tags needs to render subnode.
-    return value.stringByEncodingHTML
+  var type: BBType {
+    return tagType
   }
 
-  var escapedAttr: String {
-    return attr.stringByEncodingHTML
+  var description: TagDescription? {
+    return tagDescription
   }
 
   init(tag: TagInfo, parent: Node?) {
@@ -69,7 +63,7 @@ class Node {
     } else {
       let desc = TagDescription(
         tagNeeded: false, isSelfClosing: false, allowedChildren: nil, allowAttr: false,
-        isBlock: false, render: nil)
+        isBlock: false, html: nil, text: nil)
       let tag = TagInfo("", .unknown, desc)
       self.init(tag: tag, parent: parent)
     }
@@ -78,16 +72,6 @@ class Node {
   func setTag(tag: TagInfo) {
     self.tagType = tag.type
     self.tagDescription = tag.desc
-  }
-
-  func renderChildren(_ args: [String: Any]?) -> String {
-    var html = ""
-    for n in children {
-      if let render = n.description?.render {
-        html.append(render(n, args))
-      }
-    }
-    return html
   }
 }
 

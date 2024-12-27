@@ -6,13 +6,35 @@ extension BBCode {
 
     if let domTree = worker.parse(bbcode) {
       handleNewlineAndParagraph(node: domTree, tagManager: tagManager)
-      return (domTree.description!.render!(domTree, args))
+      return (domTree.description!.html!(domTree, args))
     } else {
       throw worker.error!
     }
   }
 }
 
+extension Node {
+  var escapedValue: String {
+    // Only plain node value is directly usable in render, other tags needs to render subnode.
+    return value.stringByEncodingHTML
+  }
+
+  var escapedAttr: String {
+    return attr.stringByEncodingHTML
+  }
+
+  func renderInnerHTML(_ args: [String: Any]?) -> String {
+    var html = ""
+    for n in children {
+      if let render = n.description?.html {
+        html.append(render(n, args))
+      }
+    }
+    return html
+  }
+}
+
+@MainActor
 func BBCodeToHTML(code: String, textSize: Int) -> String {
   guard let body = try? BBCode().html(code) else {
     return code

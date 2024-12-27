@@ -1,3 +1,7 @@
+import Kingfisher
+import SwiftUI
+
+@MainActor
 public class BBCode {
 
   let tagManager: TagManager
@@ -10,8 +14,11 @@ public class BBCode {
         allowedChildren: nil,
         allowAttr: false,
         isBlock: false,
-        render: { (n: Node, args: [String: Any]?) in
+        html: { (n: Node, args: [String: Any]?) in
           return n.escapedValue
+        },
+        text: { (n: Node, args: [String: Any]?) in
+          return .string(AttributedString(n.value))
         }
       )
     ),
@@ -22,8 +29,11 @@ public class BBCode {
         allowedChildren: nil,
         allowAttr: false,
         isBlock: false,
-        render: { (n: Node, args: [String: Any]?) in
+        html: { (n: Node, args: [String: Any]?) in
           return "<br>"
+        },
+        text: { (n: Node, args: [String: Any]?) in
+          return .string(AttributedString("\n"))
         }
       )
     ),
@@ -34,8 +44,11 @@ public class BBCode {
         allowedChildren: nil,
         allowAttr: false,
         isBlock: false,
-        render: { (n: Node, args: [String: Any]?) in
+        html: { (n: Node, args: [String: Any]?) in
           return "<p>"
+        },
+        text: { (n: Node, args: [String: Any]?) in
+          return .string(AttributedString(""))
         }
       )
     ),
@@ -46,8 +59,11 @@ public class BBCode {
         allowedChildren: nil,
         allowAttr: false,
         isBlock: false,
-        render: { (n: Node, args: [String: Any]?) in
+        html: { (n: Node, args: [String: Any]?) in
           return "</p>"
+        },
+        text: { (n: Node, args: [String: Any]?) in
+          return .string(AttributedString(""))
         }
       )
     ),
@@ -61,12 +77,32 @@ public class BBCode {
         ],
         allowAttr: false,
         isBlock: true,
-        render: { (n: Node, args: [String: Any]?) in
+        html: { (n: Node, args: [String: Any]?) in
           var html: String
           html = "<p style=\"text-align: center;\">"
-          html.append(n.renderChildren(args))
+          html.append(n.renderInnerHTML(args))
           html.append("</p>")
           return html
+        },
+        text: { (n: Node, args: [String: Any]?) in
+          var inner: AnyView = AnyView(Text(""))
+          switch n.renderInnerText(args) {
+          case .string(let content):
+            inner = AnyView(Text(content))
+          case .text(let content):
+            inner = AnyView(content)
+          case .view(let content):
+            inner = content
+          }
+          return .view(
+            AnyView(
+              HStack(spacing: 0) {
+                Spacer()
+                inner
+                Spacer()
+              }
+            )
+          )
         }
       )
     ),
@@ -80,12 +116,31 @@ public class BBCode {
         ],
         allowAttr: false,
         isBlock: true,
-        render: { (n: Node, args: [String: Any]?) in
+        html: { (n: Node, args: [String: Any]?) in
           var html: String
           html = "<p style=\"text-align: left;\">"
-          html.append(n.renderChildren(args))
+          html.append(n.renderInnerHTML(args))
           html.append("</p>")
           return html
+        },
+        text: { (n: Node, args: [String: Any]?) in
+          var inner: AnyView = AnyView(Text(""))
+          switch n.renderInnerText(args) {
+          case .string(let content):
+            inner = AnyView(Text(content))
+          case .text(let content):
+            inner = AnyView(content)
+          case .view(let content):
+            inner = content
+          }
+          return .view(
+            AnyView(
+              HStack(spacing: 0) {
+                inner
+                Spacer()
+              }
+            )
+          )
         }
       )
     ),
@@ -99,12 +154,31 @@ public class BBCode {
         ],
         allowAttr: false,
         isBlock: true,
-        render: { (n: Node, args: [String: Any]?) in
+        html: { (n: Node, args: [String: Any]?) in
           var html: String
           html = "<p style=\"text-align: right;\">"
-          html.append(n.renderChildren(args))
+          html.append(n.renderInnerHTML(args))
           html.append("</p>")
           return html
+        },
+        text: { (n: Node, args: [String: Any]?) in
+          var inner: AnyView = AnyView(Text(""))
+          switch n.renderInnerText(args) {
+          case .string(let content):
+            inner = AnyView(Text(content))
+          case .text(let content):
+            inner = AnyView(content)
+          case .view(let content):
+            inner = content
+          }
+          return .view(
+            AnyView(
+              HStack(spacing: 0) {
+                Spacer()
+                inner
+              }
+            )
+          )
         }
       )
     ),
@@ -114,11 +188,33 @@ public class BBCode {
         tagNeeded: true, isSelfClosing: false,
         allowedChildren: nil, allowAttr: false,
         isBlock: true,
-        render: { (n: Node, args: [String: Any]?) in
+        html: { (n: Node, args: [String: Any]?) in
           var html = "<div class=\"code\"><pre><code>"
-          html.append(n.renderChildren(args))
+          html.append(n.renderInnerHTML(args))
           html.append("</code></pre></div>")
           return html
+        },
+        text: { (n: Node, args: [String: Any]?) in
+          var inner: AnyView = AnyView(Text(""))
+          switch n.renderInnerText(args) {
+          case .string(let content):
+            inner = AnyView(Text(content))
+          case .text(let content):
+            inner = AnyView(content)
+          case .view(let content):
+            inner = content
+          }
+          return .view(
+            AnyView(
+              inner
+                .font(.system(.footnote, design: .monospaced))
+                .padding(12)
+                .overlay {
+                  RoundedRectangle(cornerRadius: 8)
+                    .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
+                }.padding(.vertical, 8)
+            )
+          )
         }
       )
     ),
@@ -133,12 +229,39 @@ public class BBCode {
         ],
         allowAttr: false,
         isBlock: true,
-        render: { (n: Node, args: [String: Any]?) in
+        html: { (n: Node, args: [String: Any]?) in
           var html: String
           html = "<div class=\"quote\"><blockquote>"
-          html.append(n.renderChildren(args))
+          html.append(n.renderInnerHTML(args))
           html.append("</blockquote></div>")
           return html
+        },
+        text: { (n: Node, args: [String: Any]?) in
+          var inner: AnyView = AnyView(Text(""))
+          switch n.renderInnerText(args) {
+          case .string(let content):
+            inner = AnyView(Text(content))
+          case .text(let content):
+            inner = AnyView(content)
+          case .view(let content):
+            inner = content
+          }
+          return .view(
+            AnyView(
+              inner
+                .foregroundStyle(.secondary)
+                .padding(.leading, 12)
+                .overlay(
+                  HStack {
+                    Rectangle()
+                      .frame(width: 4)
+                      .foregroundStyle(Color(hex: 0xCCCCCC))
+                      .offset(x: 0, y: 0)
+                    Spacer()
+                  }
+                )
+            )
+          )
         }
       )
     ),
@@ -148,7 +271,7 @@ public class BBCode {
         tagNeeded: true, isSelfClosing: false,
         allowedChildren: [.image],
         allowAttr: true, isBlock: false,
-        render: { (n: Node, args: [String: Any]?) in
+        html: { (n: Node, args: [String: Any]?) in
           let scheme = args?["current_scheme"] as? String ?? "http"
           let host = args?["host"] as? String
           var html: String
@@ -161,7 +284,7 @@ public class BBCode {
               }
             }
             if isPlain {
-              link = n.renderChildren(args)
+              link = n.renderInnerHTML(args)
               if let safeLink = safeUrl(url: link, defaultScheme: scheme, defaultHost: host) {
                 html =
                   "<a href=\"\(link)\" target=\"_blank\" rel=\"nofollow external noopener noreferrer\">\(safeLink)</a>"
@@ -169,18 +292,56 @@ public class BBCode {
                 html = link
               }
             } else {
-              html = n.renderChildren(args)
+              html = n.renderInnerHTML(args)
             }
           } else {
             link = n.escapedAttr
             if let safeLink = safeUrl(url: link, defaultScheme: scheme, defaultHost: host) {
               html =
-                "<a href=\"\(safeLink)\" target=\"_blank\" rel=\"nofollow external noopener noreferrer\">\(n.renderChildren(args))</a>"
+                "<a href=\"\(safeLink)\" target=\"_blank\" rel=\"nofollow external noopener noreferrer\">\(n.renderInnerHTML(args))</a>"
             } else {
-              html = n.renderChildren(args)
+              html = n.renderInnerHTML(args)
             }
           }
           return html
+        },
+        text: { (n: Node, args: [String: Any]?) in
+          let inner = n.renderInnerText(args)
+          var url = n.attr
+          if url.isEmpty {
+            url = n.value
+          }
+          guard let link = URL(string: url) else {
+            switch inner {
+            case .string(let content):
+              return .string(content)
+            case .text(let content):
+              return .text(content)
+            case .view(let content):
+              return .view(content)
+            }
+          }
+          switch inner {
+          case .string(var content):
+            content.link = link
+            return .string(content)
+          case .text(var content):
+            return .view(
+              AnyView(
+                Link(destination: link) {
+                  content
+                }
+              )
+            )
+          case .view(let content):
+            return .view(
+              AnyView(
+                Link(destination: link) {
+                  content
+                }
+              )
+            )
+          }
         }
       )
     ),
@@ -189,11 +350,11 @@ public class BBCode {
       TagDescription(
         tagNeeded: true, isSelfClosing: false, allowedChildren: nil, allowAttr: true,
         isBlock: false,
-        render: { (n: Node, args: [String: Any]?) in
+        html: { (n: Node, args: [String: Any]?) in
           let scheme = args?["current_scheme"] as? String ?? "http"
           let host = args?["host"] as? String
           var html: String
-          let link: String = n.renderChildren(args)
+          let link: String = n.renderInnerHTML(args)
           if let safeLink = safeUrl(url: link, defaultScheme: scheme, defaultHost: host) {
             if n.attr.isEmpty {
               html =
@@ -214,6 +375,21 @@ public class BBCode {
           } else {
             return link
           }
+        },
+        text: { (n: Node, args: [String: Any]?) in
+          guard let link = URL(string: n.attr) else {
+            return .string(AttributedString(n.value))
+          }
+          // TODO:
+          // let img = KFImage(link)
+          let img = Image(systemName: "photo")
+          //   .fade(duration: 0.25)
+          //   .resizable()
+          //   .scaledToFit()
+          // let img = AsyncImage(url: link)
+          return .text(
+            Text(img)
+          )
         }
       )
     ),
@@ -223,11 +399,31 @@ public class BBCode {
         tagNeeded: true, isSelfClosing: false,
         allowedChildren: [.br, .italic, .delete, .underline, .url], allowAttr: false,
         isBlock: false,
-        render: { (n: Node, args: [String: Any]?) in
+        html: { (n: Node, args: [String: Any]?) in
           var html: String = "<strong>"
-          html.append(n.renderChildren(args))
+          html.append(n.renderInnerHTML(args))
           html.append("</strong>")
           return html
+        },
+        text: { (n: Node, args: [String: Any]?) in
+          let inner = n.renderInnerText(args)
+          switch inner {
+          case .string(var content):
+            if let font = content.font {
+              content.font = font.bold()
+            } else {
+              content.font = .body.bold()
+            }
+            return .string(content)
+          case .text(var content):
+            return .text(content.bold())
+          case .view(let content):
+            return .view(
+              AnyView(
+                content.bold()
+              )
+            )
+          }
         }
       )
     ),
@@ -237,11 +433,31 @@ public class BBCode {
         tagNeeded: true, isSelfClosing: false,
         allowedChildren: [.br, .bold, .delete, .underline, .url], allowAttr: false,
         isBlock: false,
-        render: { (n: Node, args: [String: Any]?) in
+        html: { (n: Node, args: [String: Any]?) in
           var html: String = "<em>"
-          html.append(n.renderChildren(args))
+          html.append(n.renderInnerHTML(args))
           html.append("</em>")
           return html
+        },
+        text: { (n: Node, args: [String: Any]?) in
+          let inner = n.renderInnerText(args)
+          switch inner {
+          case .string(var content):
+            if let font = content.font {
+              content.font = font.italic()
+            } else {
+              content.font = .body.italic()
+            }
+            return .string(content)
+          case .text(var content):
+            return .text(content.italic())
+          case .view(let content):
+            return .view(
+              AnyView(
+                content.italic()
+              )
+            )
+          }
         }
       )
     ),
@@ -250,11 +466,27 @@ public class BBCode {
       TagDescription(
         tagNeeded: true, isSelfClosing: false,
         allowedChildren: [.br, .bold, .italic, .delete, .url], allowAttr: false, isBlock: false,
-        render: { (n: Node, args: [String: Any]?) in
+        html: { (n: Node, args: [String: Any]?) in
           var html: String = "<u>"
-          html.append(n.renderChildren(args))
+          html.append(n.renderInnerHTML(args))
           html.append("</u>")
           return html
+        },
+        text: { (n: Node, args: [String: Any]?) in
+          let inner = n.renderInnerText(args)
+          switch inner {
+          case .string(var content):
+            content.underlineStyle = .single
+            return .string(content)
+          case .text(var content):
+            return .text(content.underline())
+          case .view(let content):
+            return .view(
+              AnyView(
+                content.underline()
+              )
+            )
+          }
         }
       )
     ),
@@ -264,11 +496,27 @@ public class BBCode {
         tagNeeded: true, isSelfClosing: false,
         allowedChildren: [.br, .bold, .italic, .underline, .url], allowAttr: false,
         isBlock: false,
-        render: { (n: Node, args: [String: Any]?) in
+        html: { (n: Node, args: [String: Any]?) in
           var html: String = "<del>"
-          html.append(n.renderChildren(args))
+          html.append(n.renderInnerHTML(args))
           html.append("</del>")
           return html
+        },
+        text: { (n: Node, args: [String: Any]?) in
+          let inner = n.renderInnerText(args)
+          switch inner {
+          case .string(var content):
+            content.strikethroughStyle = .single
+            return .string(content)
+          case .text(var content):
+            return .text(content.strikethrough())
+          case .view(let content):
+            return .view(
+              AnyView(
+                content.strikethrough()
+              )
+            )
+          }
         }
       )
     ),
@@ -277,10 +525,10 @@ public class BBCode {
       TagDescription(
         tagNeeded: true, isSelfClosing: false,
         allowedChildren: [.br, .bold, .italic, .underline], allowAttr: true, isBlock: false,
-        render: { (n: Node, args: [String: Any]?) in
+        html: { (n: Node, args: [String: Any]?) in
           var html: String
           if n.attr.isEmpty {
-            html = "<span style=\"color: black\">\(n.renderChildren(args))</span>"
+            html = "<span style=\"color: black\">\(n.renderInnerHTML(args))</span>"
           } else {
             var valid = false
             if [
@@ -308,12 +556,17 @@ public class BBCode {
               }
             }
             if valid {
-              html = "<span style=\"color: \(n.attr)\">\(n.renderChildren(args))</span>"
+              html = "<span style=\"color: \(n.attr)\">\(n.renderInnerHTML(args))</span>"
             } else {
-              html = "[color=\(n.escapedAttr)]\(n.renderChildren(args))[/color]"
+              html = "[color=\(n.escapedAttr)]\(n.renderInnerHTML(args))[/color]"
             }
           }
           return html
+        },
+        text: { (n: Node, args: [String: Any]?) in
+          // TODO:
+          let inner = n.renderInnerText(args)
+          return inner
         }
       )
     ),
@@ -322,10 +575,10 @@ public class BBCode {
       TagDescription(
         tagNeeded: true, isSelfClosing: false,
         allowedChildren: [.bold, .italic, .underline], allowAttr: true, isBlock: false,
-        render: { (n: Node, args: [String: Any]?) in
+        html: { (n: Node, args: [String: Any]?) in
           var html: String
           if n.attr.isEmpty {
-            html = "<span style=\"color: black\">\(n.renderChildren(args))</span>"
+            html = "<span style=\"color: black\">\(n.renderInnerHTML(args))</span>"
           } else {
             var valid = false
             let size = Int(n.attr)
@@ -333,12 +586,38 @@ public class BBCode {
               valid = true
             }
             if valid {
-              html = "<span style=\"font-size: \(n.attr)px\">\(n.renderChildren(args))</span>"
+              html = "<span style=\"font-size: \(n.attr)px\">\(n.renderInnerHTML(args))</span>"
             } else {
-              html = "[size=\(n.escapedAttr)]\(n.renderChildren(args))[/size]"
+              html = "[size=\(n.escapedAttr)]\(n.renderInnerHTML(args))[/size]"
             }
           }
           return html
+        },
+        text: { (n: Node, args: [String: Any]?) in
+          if n.attr.isEmpty {
+            return n.renderInnerText(args)
+          }
+          guard let size = Int(n.attr) else {
+            return n.renderInnerText(args)
+          }
+          switch n.renderInnerText(args) {
+          case .string(var content):
+            if let innerFont: AttributeScopes.SwiftUIAttributes.FontAttribute.Value = content.font {
+              // FIXME: preserve inner font style
+              content.font = .system(size: CGFloat(size))
+            } else {
+              content.font = .system(size: CGFloat(size))
+            }
+            return .string(content)
+          case .text(let content):
+            return .text(content.font(.system(size: CGFloat(size))))
+          case .view(let content):
+            return .view(
+              AnyView(
+                content.font(.system(size: CGFloat(size)))
+              )
+            )
+          }
         }
       )
     ),
@@ -348,12 +627,17 @@ public class BBCode {
         tagNeeded: true, isSelfClosing: false,
         allowedChildren: [.br, .bold, .delete, .underline], allowAttr: false,
         isBlock: false,
-        render: { (n: Node, args: [String: Any]?) in
+        html: { (n: Node, args: [String: Any]?) in
           var html: String =
             "<span class=\"mask\">"
-          html.append(n.renderChildren(args))
+          html.append(n.renderInnerHTML(args))
           html.append("</span>")
           return html
+        },
+        text: { (n: Node, args: [String: Any]?) in
+          // TODO:
+          let inner = n.renderInnerText(args)
+          return inner
         }
       )
     ),
@@ -363,11 +647,16 @@ public class BBCode {
         tagNeeded: true, isSelfClosing: true,
         allowedChildren: nil, allowAttr: true,
         isBlock: false,
-        render: { (n: Node, args: [String: Any]?) in
+        html: { (n: Node, args: [String: Any]?) in
           let bgmId = Int(n.attr) ?? 24
           let iconId = String(format: "%02d", bgmId - 23)
           return
             "<img src=\"https://lain.bgm.tv/img/smiles/tv/\(iconId).gif\" alt=\"(bgm\(bgmId))\" />"
+        },
+        text: { (n: Node, args: [String: Any]?) in
+          // TODO:
+          let inner = n.renderInnerText(args)
+          return inner
         }
       )
     ),
@@ -379,9 +668,21 @@ public class BBCode {
       tagNeeded: false, isSelfClosing: false,
       allowedChildren: [],
       allowAttr: false, isBlock: true,
-      render: { (n: Node, args: [String: Any]?) in
-        return n.renderChildren(args)
-      })
+      html: { (n: Node, args: [String: Any]?) in
+        return n.renderInnerHTML(args)
+      },
+      text: { (n: Node, args: [String: Any]?) in
+        let inner = n.renderInnerText(args)
+        switch inner {
+        case .string(let content):
+          return .string(content)
+        case .text(let content):
+          return .text(content)
+        case .view(let content):
+          return .view(content)
+        }
+      }
+    )
     for tag in tags {
       rootDescription.allowedChildren?.append(tag.type)
     }

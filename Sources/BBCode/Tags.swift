@@ -1,4 +1,14 @@
 import Foundation
+import SwiftUI
+
+typealias HTMLRender = (Node, [String: Any]?) -> String
+typealias TextRender = (Node, [String: Any]?) -> TextView
+
+enum TextView {
+  case view(AnyView)
+  case text(Text)
+  case string(AttributedString)
+}
 
 class TagManager {
   let tags: [TagInfo]
@@ -62,18 +72,20 @@ class TagDescription {
   var allowedChildren: [BBType]?  // Allowed sub-elements of this element
   var allowAttr: Bool
   var isBlock: Bool
-  var render: Render?
+  var html: HTMLRender?
+  var text: TextRender?
 
   init(
     tagNeeded: Bool, isSelfClosing: Bool, allowedChildren: [BBType]?, allowAttr: Bool,
-    isBlock: Bool, render: Render?
+    isBlock: Bool, html: HTMLRender?, text: TextRender?
   ) {
     self.tagNeeded = tagNeeded
     self.isSelfClosing = isSelfClosing
     self.allowedChildren = allowedChildren
     self.allowAttr = allowAttr
     self.isBlock = isBlock
-    self.render = render
+    self.html = html
+    self.text = text
   }
 }
 

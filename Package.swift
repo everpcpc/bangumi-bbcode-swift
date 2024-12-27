@@ -9,9 +9,11 @@ let package = Package(
   products: [
     .library(name: "BBCode", targets: ["BBCode"])
   ],
-  dependencies: [],
+  dependencies: [
+    .package(url: "https://github.com/onevcat/Kingfisher.git", from: "7.0.0")
+  ],
   targets: [
-    .target(name: "BBCode"),
+    .target(name: "BBCode", dependencies: ["Kingfisher"]),
     .testTarget(name: "BBCodeTests", dependencies: ["BBCode"]),
   ]
 )
