@@ -28,7 +28,7 @@ struct ContentView: View {
 
   var body: some View {
     ScrollView {
-      BBCodeText(example).padding()
+      BBCodeView(example).padding()
     }
   }
 }
