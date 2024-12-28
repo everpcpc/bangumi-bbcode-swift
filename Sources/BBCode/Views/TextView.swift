@@ -4,7 +4,7 @@ public struct BBCodeView: View {
   let code: String
   let textSize: Int
 
-  init(_ code: String, textSize: Int = 16) {
+  public init(_ code: String, textSize: Int = 16) {
     self.code = code
     self.textSize = textSize
   }
