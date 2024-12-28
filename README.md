@@ -1,8 +1,8 @@
 # Bangumi BBCode Swift
 
-A BBCode parser and render for Bangumi writing in swift.
+A BBCode parser and render for [Bangumi](https://bgm.tv) written in Swift.
 
-Tested on iOS and macOS.
+Tested on both iOS and macOS.
 
 inspired by: https://github.com/shiningdracon/BBCode-Swift
 
