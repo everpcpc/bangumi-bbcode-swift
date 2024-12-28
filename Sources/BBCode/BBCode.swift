@@ -692,11 +692,9 @@ public class BBCode {
                     }
                   } preview: {
                     ScrollView {
-                      VStack(alignment: .leading) {
-                        inner
-                      }
-                      .padding()
-                      .frame(idealWidth: 360)
+                      inner
+                        .padding()
+                        .frame(idealWidth: 360)
                     }
                   }
               )
