@@ -33,7 +33,6 @@ struct MaskView<Content: View>: View {
           color = MaskTextColor.hide
         }
       }
-#if os(iOS)
       .onTapGesture {
         if color == MaskTextColor.hide {
           color = MaskTextColor.show
@@ -41,6 +40,5 @@ struct MaskView<Content: View>: View {
           color = MaskTextColor.hide
         }
       }
-#endif
   }
 }
