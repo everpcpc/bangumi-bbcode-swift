@@ -66,26 +66,21 @@ struct TagInfo {
   }
 }
 
-class TagDescription {
-  var tagNeeded: Bool
-  var isSelfClosing: Bool
-  var allowedChildren: [BBType]?  // Allowed sub-elements of this element
-  var allowAttr: Bool
-  var isBlock: Bool
-  var html: HTMLRender?
-  var text: TextRender?
+struct TagDescription {
+  let tagNeeded: Bool
+  let isSelfClosing: Bool
+  let allowedChildren: [BBType]?  // Allowed sub-elements of this element
+  let allowAttr: Bool
+  let isBlock: Bool
 
   init(
-    tagNeeded: Bool, isSelfClosing: Bool, allowedChildren: [BBType]?, allowAttr: Bool,
-    isBlock: Bool, html: HTMLRender?, text: TextRender?
+    tagNeeded: Bool, isSelfClosing: Bool, allowedChildren: [BBType]?, allowAttr: Bool, isBlock: Bool
   ) {
     self.tagNeeded = tagNeeded
     self.isSelfClosing = isSelfClosing
     self.allowedChildren = allowedChildren
     self.allowAttr = allowAttr
     self.isBlock = isBlock
-    self.html = html
-    self.text = text
   }
 }
 
@@ -95,7 +90,200 @@ enum BBType: Int {
   case plain
   case br
   case paragraphStart, paragraphEnd
-  case quote, code, url, image, center, left, right
+  case quote, code, url, image, photo, center, left, right
   case bold, italic, underline, delete, color, size, mask
   case smilies
 }
+
+let tags: [TagInfo] = [
+  TagInfo(
+    "", .root,
+    TagDescription(
+      tagNeeded: false, isSelfClosing: false,
+      allowedChildren: [
+        .plain, .br, .paragraphStart, .paragraphEnd,
+        .bold, .italic, .underline, .delete, .color,
+        .mask, .size, .quote, .code, .url, .image,
+        .center, .left, .right, .smilies, .photo,
+      ],
+      allowAttr: false,
+      isBlock: true
+    )
+  ),
+  TagInfo(
+    "", .plain,
+    TagDescription(
+      tagNeeded: false, isSelfClosing: true,
+      allowedChildren: nil,
+      allowAttr: false,
+      isBlock: false
+    )
+  ),
+  TagInfo(
+    "", .br,
+    TagDescription(
+      tagNeeded: false, isSelfClosing: true,
+      allowedChildren: nil,
+      allowAttr: false,
+      isBlock: false
+    )
+  ),
+  TagInfo(
+    "", .paragraphStart,
+    TagDescription(
+      tagNeeded: false, isSelfClosing: true,
+      allowedChildren: nil,
+      allowAttr: false,
+      isBlock: false
+    )
+  ),
+  TagInfo(
+    "", .paragraphEnd,
+    TagDescription(
+      tagNeeded: false, isSelfClosing: true,
+      allowedChildren: nil,
+      allowAttr: false,
+      isBlock: false
+    )
+  ),
+  TagInfo(
+    "center", .center,
+    TagDescription(
+      tagNeeded: true, isSelfClosing: false,
+      allowedChildren: [
+        .br, .bold, .italic, .underline, .delete, .color,
+        .mask, .size, .quote, .code, .url, .image,
+      ],
+      allowAttr: false,
+      isBlock: true
+    )
+  ),
+  TagInfo(
+    "left", .left,
+    TagDescription(
+      tagNeeded: true, isSelfClosing: false,
+      allowedChildren: [
+        .br, .bold, .italic, .underline, .delete, .color,
+        .mask, .size, .quote, .code, .url, .image,
+      ],
+      allowAttr: false,
+      isBlock: true
+    )
+  ),
+  TagInfo(
+    "right", .right,
+    TagDescription(
+      tagNeeded: true, isSelfClosing: false,
+      allowedChildren: [
+        .br, .bold, .italic, .underline, .delete, .color,
+        .mask, .size, .quote, .code, .url, .image,
+      ],
+      allowAttr: false,
+      isBlock: true
+    )
+  ),
+  TagInfo(
+    "code", .code,
+    TagDescription(
+      tagNeeded: true, isSelfClosing: false,
+      allowedChildren: nil, allowAttr: false,
+      isBlock: true
+    )
+  ),
+  TagInfo(
+    "quote", .quote,
+    TagDescription(
+      tagNeeded: true, isSelfClosing: false,
+      allowedChildren: [
+        .br, .bold, .italic, .underline, .delete,
+        .color, .mask, .size, .quote, .code, .url,
+        .image, .smilies,
+      ],
+      allowAttr: false,
+      isBlock: true
+    )
+  ),
+  TagInfo(
+    "url", .url,
+    TagDescription(
+      tagNeeded: true, isSelfClosing: false,
+      allowedChildren: [.image],
+      allowAttr: true, isBlock: false
+    )
+  ),
+  TagInfo(
+    "img", .image,
+    TagDescription(
+      tagNeeded: true, isSelfClosing: false, allowedChildren: nil, allowAttr: true,
+      isBlock: false
+    )
+  ),
+  TagInfo(
+    "photo", .photo,
+    TagDescription(
+      tagNeeded: true, isSelfClosing: false, allowedChildren: nil, allowAttr: true,
+      isBlock: false
+    )
+  ),
+  TagInfo(
+    "b", .bold,
+    TagDescription(
+      tagNeeded: true, isSelfClosing: false,
+      allowedChildren: [.br, .italic, .delete, .underline, .url], allowAttr: false,
+      isBlock: false
+    )
+  ),
+  TagInfo(
+    "i", .italic,
+    TagDescription(
+      tagNeeded: true, isSelfClosing: false,
+      allowedChildren: [.br, .bold, .delete, .underline, .url], allowAttr: false,
+      isBlock: false
+    )
+  ),
+  TagInfo(
+    "u", .underline,
+    TagDescription(
+      tagNeeded: true, isSelfClosing: false,
+      allowedChildren: [.br, .bold, .italic, .delete, .url], allowAttr: false, isBlock: false
+    )
+  ),
+  TagInfo(
+    "s", .delete,
+    TagDescription(
+      tagNeeded: true, isSelfClosing: false,
+      allowedChildren: [.br, .bold, .italic, .underline, .url], allowAttr: false,
+      isBlock: false
+    )
+  ),
+  TagInfo(
+    "color", .color,
+    TagDescription(
+      tagNeeded: true, isSelfClosing: false,
+      allowedChildren: [.br, .bold, .italic, .underline], allowAttr: true, isBlock: false
+    )
+  ),
+  TagInfo(
+    "size", .size,
+    TagDescription(
+      tagNeeded: true, isSelfClosing: false,
+      allowedChildren: [.bold, .italic, .underline], allowAttr: true, isBlock: false
+    )
+  ),
+  TagInfo(
+    "mask", .mask,
+    TagDescription(
+      tagNeeded: true, isSelfClosing: false,
+      allowedChildren: [.br, .bold, .delete, .underline], allowAttr: false,
+      isBlock: false
+    )
+  ),
+  TagInfo(
+    "bgm", .smilies,
+    TagDescription(
+      tagNeeded: true, isSelfClosing: true,
+      allowedChildren: nil, allowAttr: true,
+      isBlock: false
+    )
+  ),
+]

@@ -1,32 +1,6 @@
 import Foundation
 import SwiftUI
 
-public enum BBCodeError: Error {
-  case internalError(String)
-  case unfinishedOpeningTag(String)
-  case unfinishedClosingTag(String)
-  case unfinishedAttr(String)
-  case unpairedTag(String)
-  case unclosedTag(String)
-
-  public var description: String {
-    switch self {
-    case .internalError(let msg):
-      return msg
-    case .unfinishedOpeningTag(let msg):
-      return msg
-    case .unfinishedClosingTag(let msg):
-      return msg
-    case .unfinishedAttr(let msg):
-      return msg
-    case .unpairedTag(let msg):
-      return msg
-    case .unclosedTag(let msg):
-      return msg
-    }
-  }
-}
-
 typealias USIterator = String.UnicodeScalarView.Iterator
 
 protocol Parser {
@@ -62,8 +36,8 @@ class Node {
       self.init(tag: tag, parent: parent)
     } else {
       let desc = TagDescription(
-        tagNeeded: false, isSelfClosing: false, allowedChildren: nil, allowAttr: false,
-        isBlock: false, html: nil, text: nil)
+        tagNeeded: false, isSelfClosing: false, allowedChildren: nil,
+        allowAttr: false, isBlock: false)
       let tag = TagInfo("", .unknown, desc)
       self.init(tag: tag, parent: parent)
     }

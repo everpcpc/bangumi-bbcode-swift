@@ -84,6 +84,13 @@ class HTMLTests: XCTestCase {
     )
   }
 
+  func testPhoto() {
+    XCTAssertEqual(
+      try BBCode().html("日志里的图片：[photo=104569]4b/d1/873244_3p4I7.jpg[/photo]"),
+      "日志里的图片：<img src=\"https://lain.bgm.tv/pic/photo/l/4b/d1/873244_3p4I7.jpg\" rel=\"noreferrer\" referrerpolicy=\"no-referrer\" alt=\"104569\" />"
+    )
+  }
+
   func testCode() {
     XCTAssertEqual(
       try BBCode().html("代码片段：[code]print(\"Hello, World!\")[/code]"),

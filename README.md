@@ -20,8 +20,8 @@ from: https://github.com/shiningdracon/BBCode-Swift
 - [x] right
 - [x] code
 - [x] quote
+- [x] photo
 - [ ] subject
-- [ ] photo
 - [ ] email
 - [ ] user
 - [x] smilies
