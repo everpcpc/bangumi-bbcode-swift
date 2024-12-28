@@ -297,17 +297,15 @@ var textRenders: [BBType: TextRender] {
       }
       return .view(
         AnyView(
-          VStack {
-            AsyncImage(url: link) { image in
-              let renderer = ImageRenderer(content: image)
-              let width = renderer.cgImage?.width ?? 360
-              image
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(maxWidth: CGFloat(width))
-            } placeholder: {
-              Image(systemName: "photo")
-            }
+          AsyncImage(url: link) { image in
+            let renderer = ImageRenderer(content: image)
+            let width = renderer.cgImage?.width ?? 360
+            image
+              .resizable()
+              .aspectRatio(contentMode: .fit)
+              .frame(maxWidth: CGFloat(width))
+          } placeholder: {
+            Image(systemName: "photo")
           }
         )
       )
@@ -439,23 +437,9 @@ var textRenders: [BBType: TextRender] {
       }
       return .view(
         AnyView(
-          inner
-            .padding(2)
-            .background(Color(hex: 0x555555))
-            .foregroundColor(Color(hex: 0x555555))
-            .cornerRadius(2)
-            .shadow(color: Color(hex: 0x555555), radius: 5)
-            .contextMenu {
-              Button(action: {}) {
-                Text("OK")
-              }
-            } preview: {
-              ScrollView {
-                inner
-                  .padding()
-                  .frame(idealWidth: 360)
-              }
-            }
+          MaskView {
+            inner
+          }
         )
       )
     },
