@@ -687,8 +687,7 @@ public class BBCode {
                   .cornerRadius(2)
                   .shadow(color: Color(hex: 0x555555), radius: 5)
                   .contextMenu {
-                    Button(action: {
-                    }) {
+                    Button(action: {}) {
                       Text("OK")
                     }
                   } preview: {
