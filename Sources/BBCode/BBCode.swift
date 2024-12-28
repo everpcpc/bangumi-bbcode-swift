@@ -251,6 +251,7 @@ public class BBCode {
               inner
                 .foregroundStyle(.secondary)
                 .padding(.leading, 12)
+                .padding(.vertical, 8)
                 .overlay(
                   HStack {
                     Rectangle()
@@ -260,6 +261,7 @@ public class BBCode {
                     Spacer()
                   }
                 )
+                .padding(.vertical, 8)
             )
           )
         }
@@ -651,9 +653,33 @@ public class BBCode {
           return html
         },
         text: { (n: Node, args: [String: Any]?) in
-          // TODO:
-          let inner = n.renderInnerText(args)
-          return inner
+          var inner: Text = Text("")
+          switch n.renderInnerText(args) {
+          case .string(let content):
+            inner = Text(content)
+          case .text(let content):
+            inner = content
+          case .view(let content):
+            // UNREACHABLE: view should not be masked
+            inner = Text("")
+          }
+          return
+            .view(
+              AnyView(
+                Menu {
+                  inner
+                } label: {
+                  inner
+                    .padding(2)
+                    .background(Color(hex: 0x555555))
+                    .foregroundColor(Color(hex: 0x555555))
+                    .cornerRadius(2)
+                    .shadow(color: Color(hex: 0x555555), radius: 5)
+                    .animation(.linear(duration: 0.5))
+                }
+              )
+            )
+
         }
       )
     ),
