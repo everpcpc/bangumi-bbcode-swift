@@ -314,7 +314,7 @@ public class BBCode {
             case .string(let content):
               url = String(content.characters)
             default:
-              // UNREACHABLE: image tag should not have non-string inner content
+              // UNREACHABLE: url tag should not have non-string inner content
               return .string(AttributedString(n.value))
             }
           }
@@ -680,16 +680,26 @@ public class BBCode {
           return
             .view(
               AnyView(
-                Menu {
-                  inner
-                } label: {
-                  inner
-                    .padding(2)
-                    .background(Color(hex: 0x555555))
-                    .foregroundColor(Color(hex: 0x555555))
-                    .cornerRadius(2)
-                    .shadow(color: Color(hex: 0x555555), radius: 5)
-                }
+                inner
+                  .padding(2)
+                  .background(Color(hex: 0x555555))
+                  .foregroundColor(Color(hex: 0x555555))
+                  .cornerRadius(2)
+                  .shadow(color: Color(hex: 0x555555), radius: 5)
+                  .contextMenu {
+                    Button(action: {
+                    }) {
+                      Text("OK")
+                    }
+                  } preview: {
+                    ScrollView {
+                      VStack(alignment: .leading) {
+                        inner
+                      }
+                      .padding()
+                      .frame(idealWidth: 360)
+                    }
+                  }
               )
             )
         }
