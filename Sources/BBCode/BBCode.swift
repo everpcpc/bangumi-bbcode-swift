@@ -564,9 +564,25 @@ public class BBCode {
           return html
         },
         text: { (n: Node, args: [String: Any]?) in
-          // TODO:
-          let inner = n.renderInnerText(args)
-          return inner
+          if n.attr.isEmpty {
+            return n.renderInnerText(args)
+          }
+          guard let color = Color(n.attr) else {
+            return n.renderInnerText(args)
+          }
+          switch n.renderInnerText(args) {
+          case .string(var content):
+            content.foregroundColor = color
+            return .string(content)
+          case .text(var content):
+            return .text(content.foregroundColor(color))
+          case .view(let content):
+            return .view(
+              AnyView(
+                content.foregroundColor(color)
+              )
+            )
+          }
         }
       )
     ),
