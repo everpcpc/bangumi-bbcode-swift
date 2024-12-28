@@ -1,8 +1,8 @@
-# Bangumi-BBCode-Swift
+# Bangumi BBCode Swift
 
-A BBCode parser for Bangumi writing in swift.
+A BBCode parser and render for Bangumi writing in swift.
 
-from: https://github.com/shiningdracon/BBCode-Swift
+inspired by: https://github.com/shiningdracon/BBCode-Swift
 
 # supported tags
 
