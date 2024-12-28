@@ -1,4 +1,3 @@
-import Kingfisher
 import SwiftUI
 
 @MainActor
@@ -388,13 +387,12 @@ public class BBCode {
           }
           return .view(
             AnyView(
-              KFImage(link)
-                .placeholder {
-                  Image(systemName: "photo")
-                }
-                .fade(duration: 0.25)
-                .resizable()
-                .scaledToFit()
+              // AsyncImage(url: link) { image in
+              //   image
+              // } placeholder: {
+              //   Image(systemName: "photo")
+              // }
+              Text(url)
             )
           )
         }
@@ -680,11 +678,9 @@ public class BBCode {
                     .foregroundColor(Color(hex: 0x555555))
                     .cornerRadius(2)
                     .shadow(color: Color(hex: 0x555555), radius: 5)
-                    .animation(.linear(duration: 0.5))
                 }
               )
             )
-
         }
       )
     ),
@@ -701,15 +697,8 @@ public class BBCode {
             "<img src=\"https://lain.bgm.tv/img/smiles/tv/\(iconId).gif\" alt=\"(bgm\(bgmId))\" />"
         },
         text: { (n: Node, args: [String: Any]?) in
-          let bgmId = Int(n.attr) ?? 24
-          let iconId = String(format: "%02d", bgmId - 23)
-          return .view(
-            AnyView(
-              KFImage(
-                URL(string: "https://lain.bgm.tv/img/smiles/tv/\(iconId).gif")!
-              )
-            )
-          )
+          let img = Image(packageResource: "bgm\(n.attr)", ofType: "gif")
+          return .text(Text(img))
         }
       )
     ),
