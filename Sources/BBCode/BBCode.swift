@@ -379,18 +379,23 @@ public class BBCode {
           }
         },
         text: { (n: Node, args: [String: Any]?) in
-          guard let link = URL(string: n.attr) else {
+          var url = n.attr
+          if url.isEmpty {
+            url = n.value
+          }
+          guard let link = URL(string: url) else {
             return .string(AttributedString(n.value))
           }
-          // TODO:
-          // let img = KFImage(link)
-          let img = Image(systemName: "photo")
-          //   .fade(duration: 0.25)
-          //   .resizable()
-          //   .scaledToFit()
-          // let img = AsyncImage(url: link)
-          return .text(
-            Text(img)
+          return .view(
+            AnyView(
+              KFImage(link)
+                .placeholder {
+                  Image(systemName: "photo")
+                }
+                .fade(duration: 0.25)
+                .resizable()
+                .scaledToFit()
+            )
           )
         }
       )
@@ -696,9 +701,15 @@ public class BBCode {
             "<img src=\"https://lain.bgm.tv/img/smiles/tv/\(iconId).gif\" alt=\"(bgm\(bgmId))\" />"
         },
         text: { (n: Node, args: [String: Any]?) in
-          // TODO:
-          let inner = n.renderInnerText(args)
-          return inner
+          let bgmId = Int(n.attr) ?? 24
+          let iconId = String(format: "%02d", bgmId - 23)
+          return .view(
+            AnyView(
+              KFImage(
+                URL(string: "https://lain.bgm.tv/img/smiles/tv/\(iconId).gif")!
+              )
+            )
+          )
         }
       )
     ),
