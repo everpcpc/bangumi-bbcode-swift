@@ -310,7 +310,13 @@ public class BBCode {
           let inner = n.renderInnerText(args)
           var url = n.attr
           if url.isEmpty {
-            url = n.value
+            switch n.renderInnerText(args) {
+            case .string(let content):
+              url = String(content.characters)
+            default:
+              // UNREACHABLE: image tag should not have non-string inner content
+              return .string(AttributedString(n.value))
+            }
           }
           guard let link = URL(string: url) else {
             switch inner {
@@ -380,19 +386,24 @@ public class BBCode {
         text: { (n: Node, args: [String: Any]?) in
           var url = n.attr
           if url.isEmpty {
-            url = n.value
+            switch n.renderInnerText(args) {
+            case .string(let content):
+              url = String(content.characters)
+            default:
+              // UNREACHABLE: image tag should not have non-string inner content
+              return .string(AttributedString(n.value))
+            }
           }
           guard let link = URL(string: url) else {
             return .string(AttributedString(n.value))
           }
           return .view(
             AnyView(
-              // AsyncImage(url: link) { image in
-              //   image
-              // } placeholder: {
-              //   Image(systemName: "photo")
-              // }
-              Text(url)
+              AsyncImage(url: link) { image in
+                image
+              } placeholder: {
+                Image(systemName: "photo")
+              }
             )
           )
         }
