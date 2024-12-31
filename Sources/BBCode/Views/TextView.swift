@@ -39,7 +39,11 @@ public struct BBCodeView: View {
     Bangumi 番组计划: [url]https://chii.in/[/url]
     带文字说明的网站链接：[url=https://chii.in]Bangumi 番组计划[/url]
     存放于其他网络服务器的图片：[img]https://chii.in/img/ico/bgm88-31.gif[/img]
-    代码片段：[code]print("Hello, World!")[/code]
+    代码片段：
+    [code]
+    print("Hello, World!")
+    exit(0)
+    [/code]
     (bgm38) (bgm24)
     [quote]引用的片段[/quote]
     [photo=104569]4b/d1/873244_3p4I7.jpg[/photo]

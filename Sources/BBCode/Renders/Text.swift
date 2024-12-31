@@ -274,8 +274,6 @@ var textRenders: [BBType: TextRender] {
                 .foregroundStyle(Color(hex: 0xCCCCCC))
                 .offset(x: 0, y: 0), alignment: .leading
             )
-            .padding(.top, -8)
-            .padding(.bottom, 4)
         )
       )
     },
