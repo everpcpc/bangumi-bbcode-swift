@@ -256,7 +256,7 @@ let tags: [TagInfo] = [
     "url", .url,
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
-      allowedChildren: [.image, .color] + BBType.unsupported,
+      allowedChildren: [.image, .color, .delete] + BBType.unsupported,
       allowAttr: true, isBlock: false
     )
   ),
@@ -314,7 +314,8 @@ let tags: [TagInfo] = [
     "color", .color,
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
-      allowedChildren: [.br, .bold, .italic, .underline] + BBType.unsupported, allowAttr: true,
+      allowedChildren: [.br, .bold, .delete, .italic, .underline] + BBType.unsupported,
+      allowAttr: true,
       isBlock: false
     )
   ),
@@ -322,7 +323,10 @@ let tags: [TagInfo] = [
     "size", .size,
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
-      allowedChildren: [.bold, .italic, .underline, .color, .left, .right, .center, .align]
+      allowedChildren: [
+        .bold, .italic, .delete, .underline, .color, .url, .left, .right, .center, .align, .mask,
+        .smilies, .br,
+      ]
         + BBType.unsupported, allowAttr: true,
       isBlock: false
     )

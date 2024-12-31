@@ -58,6 +58,17 @@ class ContentParser: Parser {
         }
       }
     }
+    if worker.currentNode.type != .root {
+      if let p = worker.currentNode.parent {
+        worker.currentNode = p
+        return ContentParser()
+      } else {
+        // unfinished without parent
+        // This should never happen
+        worker.error = BBCodeError.internalError("bug")
+        return nil
+      }
+    }
     return nil
   }
 }

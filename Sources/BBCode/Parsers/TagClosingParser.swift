@@ -19,9 +19,9 @@ class TagClosingParser: Parser {
             if let tag = worker.tagManager.getInfo(str: tagName) {
               if allowedChildren.contains(tag.type) {
                 // not paired tag
-                worker.error = BBCodeError.unpairedTag(
-                  unclosedTagDetail(unclosedNode: worker.currentNode))
-                return nil
+                // worker.error = BBCodeError.unpairedTag(
+                //   unclosedTagDetail(unclosedNode: worker.currentNode))
+                return ContentParser()
               }
             }
           }

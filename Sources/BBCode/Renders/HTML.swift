@@ -79,7 +79,7 @@ var htmlRenders: [BBType: HTMLRender] {
     .align: { (n: Node, args: [String: Any]?) in
       var html: String
       var align = ""
-      switch n.escapedAttr {
+      switch n.escapedAttr.lowercased() {
       case "left":
         align = "left"
       case "right":

@@ -203,7 +203,7 @@ var textRenders: [BBType: TextRender] {
       case .view(let content):
         inner = content
       }
-      switch n.attr {
+      switch n.attr.lowercased() {
       case "left":
         return .view(
           AnyView(
@@ -531,10 +531,13 @@ func handleTextNewlines(node: Node, tagManager: TagManager) {
     if n.type == .br {
       if previous?.description?.isBlock ?? false {
         n.setTag(tag: tagManager.getInfo(type: .plain)!)
+        previous = nil
+        handleNewlineAndParagraph(node: n, tagManager: tagManager)
+      } else {
+        previous = n
       }
     } else {
-      handleNewlineAndParagraph(node: n, tagManager: tagManager)
+      previous = n
     }
-    previous = n
   }
 }
