@@ -82,6 +82,8 @@ struct ContentView: View {
 - [x] center
 - [x] left
 - [x] right
+- [x] align
+- [x] list
 - [x] code
 - [x] quote
 - [x] photo

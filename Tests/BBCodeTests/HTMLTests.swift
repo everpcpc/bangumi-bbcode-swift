@@ -42,6 +42,12 @@ class HTMLTests: XCTestCase {
       "<p style=\"text-align: right;\">居右文字</p>")
   }
 
+  func testAlign() {
+    XCTAssertEqual(
+      try BBCode().html("[align=center]居中文字[/align]"),
+      "<p style=\"text-align: center;\">居中文字</p>")
+  }
+
   func testMask() {
     XCTAssertEqual(
       try BBCode().html("我是[mask]马赛克文字[/mask]"),

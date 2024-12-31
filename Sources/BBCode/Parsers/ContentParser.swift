@@ -9,7 +9,7 @@ class ContentParser: Parser {
     while let c = g.next() {
       if c == UnicodeScalar(10) || c == UnicodeScalar(13) {
         if let allowedChildren = worker.currentNode.description?.allowedChildren,
-           allowedChildren.contains(.br)
+          allowedChildren.contains(.br)
         {
           if c == UnicodeScalar(13) || (c == UnicodeScalar(10) && !lastWasCR) {
             if newNode.value.isEmpty {

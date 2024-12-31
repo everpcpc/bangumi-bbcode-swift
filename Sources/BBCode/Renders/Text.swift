@@ -5,7 +5,7 @@ extension BBCode {
   func text(_ bbcode: String, args: [String: Any]? = nil) -> TextView {
     let worker: Worker = Worker(tagManager: tagManager)
     if let tree = worker.parse(bbcode) {
-      handleNewlineAndParagraph(node: tree, tagManager: tagManager)
+      handleTextNewlines(node: tree, tagManager: tagManager)
       if let render = textRenders[tree.type] {
         let content = render(tree, args)
         return content
@@ -57,7 +57,7 @@ extension Node {
       }
       return .view(
         AnyView(
-          VStack(alignment: .leading) {
+          VStack(alignment: .leading, spacing: 0) {
             ForEach(views.indices, id: \.self) { i in
               views[i]
             }
@@ -91,6 +91,9 @@ var textRenders: [BBType: TextRender] {
       return .string(AttributedString(""))
     },
     .paragraphEnd: { (n: Node, args: [String: Any]?) in
+      return .string(AttributedString(""))
+    },
+    .background: { (n: Node, args: [String: Any]?) in
       return .string(AttributedString(""))
     },
     .root: { (n: Node, args: [String: Any]?) in
@@ -162,6 +165,71 @@ var textRenders: [BBType: TextRender] {
         )
       )
     },
+    .list: { (n: Node, args: [String: Any]?) in
+      var inner: AnyView = AnyView(Text(""))
+      switch n.renderInnerText(args) {
+      case .string(let content):
+        inner = AnyView(Text(content))
+      case .text(let content):
+        inner = AnyView(content)
+      case .view(let content):
+        inner = content
+      }
+      return .view(
+        AnyView(
+          VStack(alignment: .leading, spacing: 0) {
+            inner
+          }.padding(.leading, 12)
+        )
+      )
+    },
+    .listitem: { (n: Node, args: [String: Any]?) in
+      switch n.renderInnerText(args) {
+      case .string(let content):
+        return .text(Text("• \(content)"))
+      case .text(let content):
+        return .text(Text("• ") + content)
+      case .view(_):
+        return .text(Text("• "))
+      }
+    },
+    .align: { (n: Node, args: [String: Any]?) in
+      var inner: AnyView = AnyView(Text(""))
+      switch n.renderInnerText(args) {
+      case .string(let content):
+        inner = AnyView(Text(content))
+      case .text(let content):
+        inner = AnyView(content)
+      case .view(let content):
+        inner = content
+      }
+      switch n.attr {
+      case "left":
+        return .view(
+          AnyView(
+            HStack(spacing: 0) {
+              inner
+              Spacer()
+            }))
+      case "right":
+        return .view(
+          AnyView(
+            HStack(spacing: 0) {
+              Spacer()
+              inner
+            }))
+      case "center":
+        return .view(
+          AnyView(
+            HStack(spacing: 0) {
+              Spacer()
+              inner
+              Spacer()
+            }))
+      default:
+        return .view(inner)
+      }
+    },
     .code: { (n: Node, args: [String: Any]?) in
       var inner: AnyView = AnyView(Text(""))
       switch n.renderInnerText(args) {
@@ -180,7 +248,7 @@ var textRenders: [BBType: TextRender] {
             .overlay {
               RoundedRectangle(cornerRadius: 8)
                 .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
-            }.padding(.vertical, 8)
+            }.padding(.vertical, 4)
         )
       )
     },
@@ -201,15 +269,13 @@ var textRenders: [BBType: TextRender] {
             .padding(.leading, 12)
             .padding(.vertical, 8)
             .overlay(
-              HStack {
-                Rectangle()
-                  .frame(width: 4)
-                  .foregroundStyle(Color(hex: 0xCCCCCC))
-                  .offset(x: 0, y: 0)
-                Spacer()
-              }
+              Rectangle()
+                .frame(width: 4, alignment: .leading)
+                .foregroundStyle(Color(hex: 0xCCCCCC))
+                .offset(x: 0, y: 0), alignment: .leading
             )
-            .padding(.vertical, 8)
+            .padding(.top, -8)
+            .padding(.bottom, 4)
         )
       )
     },
@@ -448,4 +514,27 @@ var textRenders: [BBType: TextRender] {
       return .text(Text(img))
     },
   ]
+}
+
+func handleTextNewlines(node: Node, tagManager: TagManager) {
+  // Trim head "br"s
+  while node.children.first?.type == .br {
+    node.children.removeFirst()
+  }
+  // Trim tail "br"s
+  while node.children.last?.type == .br {
+    node.children.removeLast()
+  }
+
+  var previous: Node? = nil
+  for n in node.children {
+    if n.type == .br {
+      if previous?.description?.isBlock ?? false {
+        n.setTag(tag: tagManager.getInfo(type: .plain)!)
+      }
+    } else {
+      handleNewlineAndParagraph(node: n, tagManager: tagManager)
+    }
+    previous = n
+  }
 }

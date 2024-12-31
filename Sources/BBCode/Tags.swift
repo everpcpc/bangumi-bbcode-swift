@@ -90,9 +90,14 @@ enum BBType: Int {
   case plain
   case br
   case paragraphStart, paragraphEnd
-  case quote, code, url, image, photo, center, left, right
+  case center, left, right, align
+  case quote, code, url, image, photo
   case bold, italic, underline, delete, color, size, mask
+  case list, listitem
   case smilies
+  case background
+
+  static let unsupported: [BBType] = [.background]
 }
 
 let tags: [TagInfo] = [
@@ -104,8 +109,9 @@ let tags: [TagInfo] = [
         .plain, .br, .paragraphStart, .paragraphEnd,
         .bold, .italic, .underline, .delete, .color,
         .mask, .size, .quote, .code, .url, .image,
-        .center, .left, .right, .smilies, .photo,
-      ],
+        .center, .left, .right, .align, .smilies, .photo,
+        .list,
+      ] + BBType.unsupported,
       allowAttr: false,
       isBlock: true
     )
@@ -147,13 +153,22 @@ let tags: [TagInfo] = [
     )
   ),
   TagInfo(
+    "bg", .background,
+    TagDescription(
+      tagNeeded: true, isSelfClosing: false,
+      allowedChildren: nil,
+      allowAttr: true,
+      isBlock: false
+    )
+  ),
+  TagInfo(
     "center", .center,
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
       allowedChildren: [
         .br, .bold, .italic, .underline, .delete, .color,
         .mask, .size, .quote, .code, .url, .image,
-      ],
+      ] + BBType.unsupported,
       allowAttr: false,
       isBlock: true
     )
@@ -165,7 +180,7 @@ let tags: [TagInfo] = [
       allowedChildren: [
         .br, .bold, .italic, .underline, .delete, .color,
         .mask, .size, .quote, .code, .url, .image,
-      ],
+      ] + BBType.unsupported,
       allowAttr: false,
       isBlock: true
     )
@@ -177,7 +192,41 @@ let tags: [TagInfo] = [
       allowedChildren: [
         .br, .bold, .italic, .underline, .delete, .color,
         .mask, .size, .quote, .code, .url, .image,
-      ],
+      ] + BBType.unsupported,
+      allowAttr: false,
+      isBlock: true
+    )
+  ),
+  TagInfo(
+    "align", .align,
+    TagDescription(
+      tagNeeded: true, isSelfClosing: false,
+      allowedChildren: [
+        .br, .bold, .italic, .underline, .delete, .color,
+        .mask, .size, .quote, .code, .url, .image,
+      ] + BBType.unsupported,
+      allowAttr: true,
+      isBlock: true
+    )
+  ),
+  TagInfo(
+    "list", .list,
+    TagDescription(
+      tagNeeded: true, isSelfClosing: false,
+      allowedChildren: [
+        .list, .listitem, .br, .bold, .italic, .underline, .delete, .color, .url,
+      ] + BBType.unsupported,
+      allowAttr: false,
+      isBlock: true
+    )
+  ),
+  TagInfo(
+    "*", .listitem,
+    TagDescription(
+      tagNeeded: true, isSelfClosing: true,
+      allowedChildren: [
+        .br, .bold, .italic, .underline, .delete, .color, .url,
+      ] + BBType.unsupported,
       allowAttr: false,
       isBlock: true
     )
@@ -198,7 +247,7 @@ let tags: [TagInfo] = [
         .br, .bold, .italic, .underline, .delete,
         .color, .mask, .size, .quote, .code, .url,
         .image, .smilies,
-      ],
+      ] + BBType.unsupported,
       allowAttr: false,
       isBlock: true
     )
@@ -207,7 +256,7 @@ let tags: [TagInfo] = [
     "url", .url,
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
-      allowedChildren: [.image],
+      allowedChildren: [.image, .color] + BBType.unsupported,
       allowAttr: true, isBlock: false
     )
   ),
@@ -215,21 +264,22 @@ let tags: [TagInfo] = [
     "img", .image,
     TagDescription(
       tagNeeded: true, isSelfClosing: false, allowedChildren: nil, allowAttr: true,
-      isBlock: false
+      isBlock: true
     )
   ),
   TagInfo(
     "photo", .photo,
     TagDescription(
       tagNeeded: true, isSelfClosing: false, allowedChildren: nil, allowAttr: true,
-      isBlock: false
+      isBlock: true
     )
   ),
   TagInfo(
     "b", .bold,
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
-      allowedChildren: [.br, .italic, .delete, .underline, .url], allowAttr: false,
+      allowedChildren: [.br, .italic, .delete, .underline, .url, .color] + BBType.unsupported,
+      allowAttr: false,
       isBlock: false
     )
   ),
@@ -237,7 +287,8 @@ let tags: [TagInfo] = [
     "i", .italic,
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
-      allowedChildren: [.br, .bold, .delete, .underline, .url], allowAttr: false,
+      allowedChildren: [.br, .bold, .delete, .underline, .url, .color] + BBType.unsupported,
+      allowAttr: false,
       isBlock: false
     )
   ),
@@ -245,14 +296,17 @@ let tags: [TagInfo] = [
     "u", .underline,
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
-      allowedChildren: [.br, .bold, .italic, .delete, .url], allowAttr: false, isBlock: false
+      allowedChildren: [.br, .bold, .italic, .delete, .url, .color] + BBType.unsupported,
+      allowAttr: false,
+      isBlock: false
     )
   ),
   TagInfo(
     "s", .delete,
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
-      allowedChildren: [.br, .bold, .italic, .underline, .url], allowAttr: false,
+      allowedChildren: [.br, .bold, .italic, .underline, .url, .color] + BBType.unsupported,
+      allowAttr: false,
       isBlock: false
     )
   ),
@@ -260,22 +314,25 @@ let tags: [TagInfo] = [
     "color", .color,
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
-      allowedChildren: [.br, .bold, .italic, .underline], allowAttr: true, isBlock: false
+      allowedChildren: [.br, .bold, .italic, .underline] + BBType.unsupported, allowAttr: true,
+      isBlock: false
     )
   ),
   TagInfo(
     "size", .size,
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
-      allowedChildren: [.bold, .italic, .underline], allowAttr: true, isBlock: false
+      allowedChildren: [.bold, .italic, .underline, .color, .left, .right, .center, .align]
+        + BBType.unsupported, allowAttr: true,
+      isBlock: false
     )
   ),
   TagInfo(
     "mask", .mask,
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
-      allowedChildren: [.br, .bold, .delete, .underline], allowAttr: false,
-      isBlock: false
+      allowedChildren: [.br, .bold, .delete, .underline] + BBType.unsupported, allowAttr: false,
+      isBlock: true
     )
   ),
   TagInfo(

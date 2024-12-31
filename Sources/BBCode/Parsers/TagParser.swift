@@ -27,7 +27,7 @@ class TagParser: Parser {
         if let tag = worker.tagManager.getInfo(str: newNode.value) {
           newNode.setTag(tag: tag)
           if let allowedChildren = worker.currentNode.description?.allowedChildren,
-             allowedChildren.contains(newNode.type)
+            allowedChildren.contains(newNode.type)
           {
             if (newNode.description?.allowAttr)! {
               newNode.paired = false  //isSelfClosing tag has no attr, so its must be not paired
@@ -43,7 +43,7 @@ class TagParser: Parser {
         if let tag = worker.tagManager.getInfo(str: newNode.value) {
           newNode.setTag(tag: tag)
           if let allowedChildren = worker.currentNode.description?.allowedChildren,
-             allowedChildren.contains(newNode.type)
+            allowedChildren.contains(newNode.type)
           {
             if (newNode.description?.isSelfClosing)! {
               //<opening_tag_1> ::= <tag_prefix> <tag_end>

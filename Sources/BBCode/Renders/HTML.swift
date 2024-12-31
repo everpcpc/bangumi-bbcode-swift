@@ -49,6 +49,9 @@ var htmlRenders: [BBType: HTMLRender] {
     .paragraphEnd: { (n: Node, args: [String: Any]?) in
       return "</p>"
     },
+    .background: { (n: Node, args: [String: Any]?) in
+      return ""
+    },
     .root: { (n: Node, args: [String: Any]?) in
       return n.renderInnerHTML(args)
     },
@@ -71,6 +74,48 @@ var htmlRenders: [BBType: HTMLRender] {
       html = "<p style=\"text-align: right;\">"
       html.append(n.renderInnerHTML(args))
       html.append("</p>")
+      return html
+    },
+    .align: { (n: Node, args: [String: Any]?) in
+      var html: String
+      var align = ""
+      switch n.escapedAttr {
+      case "left":
+        align = "left"
+      case "right":
+        align = "right"
+      case "center":
+        align = "center"
+      default:
+        align = ""
+      }
+      if align.isEmpty {
+        return n.renderInnerHTML(args)
+      }
+      html = "<p style=\"text-align: \(align);\">"
+      html.append(n.renderInnerHTML(args))
+      html.append("</p>")
+      return html
+    },
+    .list: { (n: Node, args: [String: Any]?) in
+      var html: String
+      if n.attr.isEmpty {
+        html = "<ul>"
+      } else {
+        html = "<ol>"
+      }
+      html.append(n.renderInnerHTML(args))
+      if n.attr.isEmpty {
+        html.append("</ul>")
+      } else {
+        html.append("</ol>")
+      }
+      return html
+    },
+    .listitem: { (n: Node, args: [String: Any]?) in
+      var html: String = "<li>"
+      html.append(n.renderInnerHTML(args))
+      html.append("</li>")
       return html
     },
     .code: { (n: Node, args: [String: Any]?) in

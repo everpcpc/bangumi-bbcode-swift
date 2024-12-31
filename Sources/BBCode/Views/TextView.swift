@@ -40,8 +40,8 @@ public struct BBCodeView: View {
     带文字说明的网站链接：[url=https://chii.in]Bangumi 番组计划[/url]
     存放于其他网络服务器的图片：[img]https://chii.in/img/ico/bgm88-31.gif[/img]
     代码片段：[code]print("Hello, World!")[/code]
-    [quote]引用的片段[/quote]
     (bgm38) (bgm24)
+    [quote]引用的片段[/quote]
     [photo=104569]4b/d1/873244_3p4I7.jpg[/photo]
 
     传说中性能超强的人型电脑，故事第一话时被人弃置在垃圾场，[i]后被我们的本须和秀树发现，[s]并抱[u]回家[/u][/s][/i]。[color=red]由于开始时唧只会[b]'唧，唧'[/b]的这样叫[/color]，所以秀树为其取名 '唧' [mask]TV版第二话「[s]ちぃでかける[/s]」[/mask]时发现小唧本身并没有安OS，不过因为拥有“学习程式”，所以可以通过对话和教导让她‘成长’起来 (bgm38)。
