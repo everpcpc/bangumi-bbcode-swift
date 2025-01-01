@@ -301,13 +301,14 @@ var textRenders: [BBType: TextRender] {
       switch inner {
       case .string(var content):
         content.link = link
+        content.foregroundColor = Color(hex: 0x0084B4)
         return .string(content)
       case .text(let content):
         return .view(
           AnyView(
             Link(destination: link) {
               content
-            }
+            }.foregroundStyle(Color(hex: 0x0084B4))
           )
         )
       case .view(let content):
@@ -315,7 +316,7 @@ var textRenders: [BBType: TextRender] {
           AnyView(
             Link(destination: link) {
               content
-            }
+            }.foregroundStyle(Color(hex: 0x0084B4))
           )
         )
       }
