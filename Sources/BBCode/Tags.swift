@@ -95,9 +95,9 @@ enum BBType: Int {
   case bold, italic, underline, delete, color, size, mask
   case list, listitem
   case smilies
-  case background
+  case background, avatar
 
-  static let unsupported: [BBType] = [.background]
+  static let unsupported: [BBType] = [.background, .avatar]
 }
 
 let tags: [TagInfo] = [
@@ -342,7 +342,7 @@ let tags: [TagInfo] = [
     "mask", .mask,
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
-      allowedChildren: [.br, .bold, .delete, .underline] + BBType.unsupported, allowAttr: false,
+      allowedChildren: [.br, .bold, .delete, .underline, .italic, .size] + BBType.unsupported, allowAttr: false,
       isBlock: true
     )
   ),
