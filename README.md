@@ -87,7 +87,7 @@ struct ContentView: View {
 - [x] code
 - [x] quote
 - [x] photo
-- [ ] subject
-- [ ] email
-- [ ] user
+- [x] subject
+- [x] user
 - [x] smilies
+- [ ] email

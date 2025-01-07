@@ -277,6 +277,97 @@ var textRenders: [BBType: TextRender] {
         )
       )
     },
+    .subject: { (n: Node, args: [String: Any]?) in
+      let inner = n.renderInnerText(args)
+      var subjectID = n.attr
+      if subjectID.isEmpty {
+        switch n.renderInnerText(args) {
+        case .string(let content):
+          subjectID = String(content.characters)
+        default:
+          return .string(AttributedString(n.value))
+        }
+      }
+      let url = "https://bgm.tv/subject/\(subjectID)"
+      guard let link = URL(string: url) else {
+        switch inner {
+        case .string(let content):
+          return .string(content)
+        case .text(let content):
+          return .text(content)
+        case .view(let content):
+          return .view(content)
+        }
+      }
+      switch inner {
+      case .string(var content):
+        content.link = link
+        content.foregroundColor = Color(hex: 0x0084B4)
+        return .string(content)
+      case .text(let content):
+        return .view(
+          AnyView(
+            Link(destination: link) {
+              content
+            }.foregroundStyle(Color(hex: 0x0084B4))
+          )
+        )
+      case .view(let content):
+        return .view(
+          AnyView(
+            Link(destination: link) {
+              content
+            }.foregroundStyle(Color(hex: 0x0084B4))
+          )
+        )
+      }
+    },
+    .user: { (n: Node, args: [String: Any]?) in
+      let inner = n.renderInnerText(args)
+      var username = n.attr
+      if username.isEmpty {
+        switch n.renderInnerText(args) {
+        case .string(let content):
+          username = String(content.characters)
+        default:
+          return .string(AttributedString(n.value))
+        }
+      }
+      let url = "https://bgm.tv/user/\(username)"
+      guard let link = URL(string: url) else {
+        switch inner {
+        case .string(let content):
+          return .string(content)
+        case .text(let content):
+          return .text(content)
+        case .view(let content):
+          return .view(content)
+        }
+      }
+      switch inner {
+      case .string(var content):
+        content = "@" + content
+        content.link = link
+        content.foregroundColor = Color(hex: 0x0084B4)
+        return .string(content)
+      case .text(let content):
+        return .view(
+          AnyView(
+            Link(destination: link) {
+              Text("@") + content
+            }.foregroundStyle(Color(hex: 0x0084B4))
+          )
+        )
+      case .view(let content):
+        return .view(
+          AnyView(
+            Link(destination: link) {
+              content
+            }.foregroundStyle(Color(hex: 0x0084B4))
+          )
+        )
+      }
+    },
     .url: { (n: Node, args: [String: Any]?) in
       let inner = n.renderInnerText(args)
       var url = n.attr

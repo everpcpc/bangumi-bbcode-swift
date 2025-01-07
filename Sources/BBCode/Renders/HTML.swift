@@ -131,6 +131,40 @@ var htmlRenders: [BBType: HTMLRender] {
       html.append("</blockquote></div>")
       return html
     },
+    .subject: { (n: Node, args: [String: Any]?) in
+      let host = args?["host"] as? String
+      var html: String
+      var link: String
+      if n.attr.isEmpty {
+        html = n.renderInnerHTML(args)
+      } else {
+        link = "https://bgm.tv/subject/\(n.escapedAttr)"
+        if let safeLink = safeUrl(url: link, defaultScheme: "https", defaultHost: host) {
+          html =
+            "<a href=\"\(safeLink)\" target=\"_blank\" rel=\"nofollow external noopener noreferrer\">\(n.renderInnerHTML(args))</a>"
+        } else {
+          html = n.renderInnerHTML(args)
+        }
+      }
+      return html
+    },
+    .user: { (n: Node, args: [String: Any]?) in
+      let host = args?["host"] as? String
+      var html: String
+      var link: String
+      if n.attr.isEmpty {
+        html = n.renderInnerHTML(args)
+      } else {
+        link = "https://bgm.tv/user/\(n.escapedAttr)"
+        if let safeLink = safeUrl(url: link, defaultScheme: "https", defaultHost: host) {
+          html =
+            "<a href=\"\(safeLink)\" target=\"_blank\" rel=\"nofollow external noopener noreferrer\">@\(n.renderInnerHTML(args))</a>"
+        } else {
+          html = n.renderInnerHTML(args)
+        }
+      }
+      return html
+    },
     .url: { (n: Node, args: [String: Any]?) in
       let host = args?["host"] as? String
       var html: String

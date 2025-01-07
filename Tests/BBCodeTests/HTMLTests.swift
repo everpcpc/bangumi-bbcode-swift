@@ -83,6 +83,20 @@ class HTMLTests: XCTestCase {
     )
   }
 
+  func testSubject() {
+    XCTAssertEqual(
+      try BBCode().html("条目链接：[subject=12]ちょびっツ[/subject]"),
+      "条目链接：<a href=\"https://bgm.tv/subject/12\" target=\"_blank\" rel=\"nofollow external noopener noreferrer\">&#12385;&#12423;&#12403;&#12387;&#12484;</a>"
+    )
+  }
+
+  func testUser() {
+    XCTAssertEqual(
+      try BBCode().html("用户链接：[user=873244]五月雨[/user]"),
+      "用户链接：<a href=\"https://bgm.tv/user/873244\" target=\"_blank\" rel=\"nofollow external noopener noreferrer\">@五月雨</a>"
+    )
+  }
+
   func testImage() {
     XCTAssertEqual(
       try BBCode().html("存放于其他网络服务器的图片：[img]https://chii.in/img/ico/bgm88-31.gif[/img]"),
