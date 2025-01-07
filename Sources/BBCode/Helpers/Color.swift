@@ -42,8 +42,28 @@ extension Color {
     }
 
     // handle 6-digit hex color
-    guard color.count == 6, let hex = Int(color, radix: 16) else { return nil }
-    self.init(hex: hex)
+    if color.count == 6, let hex = Int(color, radix: 16) {
+      self.init(hex: hex)
+      return
+    }
+
+    // handle 8-digit hex color
+    if color.count == 8, let hex = Int(color, radix: 16) {
+      let a = (hex >> 24) & 0xff
+      let r = (hex >> 16) & 0xff
+      let g = (hex >> 8) & 0xff
+      let b = hex & 0xff
+      self.init(
+        .sRGB,
+        red: Double(r) / 255,
+        green: Double(g) / 255,
+        blue: Double(b) / 255,
+        opacity: Double(a) / 255
+      )
+      return
+    }
+
+    return nil
   }
 }
 

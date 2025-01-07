@@ -162,6 +162,15 @@ let tags: [TagInfo] = [
     )
   ),
   TagInfo(
+    "avatar", .avatar,
+    TagDescription(
+      tagNeeded: true, isSelfClosing: false,
+      allowedChildren: nil,
+      allowAttr: true,
+      isBlock: false
+    )
+  ),
+  TagInfo(
     "center", .center,
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
@@ -342,7 +351,8 @@ let tags: [TagInfo] = [
     "mask", .mask,
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
-      allowedChildren: [.br, .bold, .delete, .underline, .italic, .size] + BBType.unsupported, allowAttr: false,
+      allowedChildren: [.br, .bold, .delete, .underline, .italic, .size] + BBType.unsupported,
+      allowAttr: false,
       isBlock: true
     )
   ),
