@@ -96,7 +96,10 @@ var textRenders: [BBType: TextRender] {
     .background: { (n: Node, args: [String: Any]?) in
       return .string(AttributedString(""))
     },
-    .root: { (n: Node, args: [String: Any]?) in
+    .avatar: { (n: Node, args: [String: Any]?) in
+      return .string(AttributedString(""))
+    },
+    .float: { (n: Node, args: [String: Any]?) in
       let inner = n.renderInnerText(args)
       switch inner {
       case .string(let content):
@@ -107,63 +110,16 @@ var textRenders: [BBType: TextRender] {
         return .view(content)
       }
     },
-    .center: { (n: Node, args: [String: Any]?) in
-      var inner: AnyView = AnyView(Text(""))
-      switch n.renderInnerText(args) {
+    .root: { (n: Node, args: [String: Any]?) in
+      let inner = n.renderInnerText(args)
+      switch inner {
       case .string(let content):
-        inner = AnyView(Text(content))
+        return .string(content)
       case .text(let content):
-        inner = AnyView(content)
+        return .text(content)
       case .view(let content):
-        inner = content
+        return .view(content)
       }
-      return .view(
-        AnyView(
-          HStack(spacing: 0) {
-            Spacer()
-            inner
-            Spacer()
-          }
-        )
-      )
-    },
-    .left: { (n: Node, args: [String: Any]?) in
-      var inner: AnyView = AnyView(Text(""))
-      switch n.renderInnerText(args) {
-      case .string(let content):
-        inner = AnyView(Text(content))
-      case .text(let content):
-        inner = AnyView(content)
-      case .view(let content):
-        inner = content
-      }
-      return .view(
-        AnyView(
-          HStack(spacing: 0) {
-            inner
-            Spacer()
-          }
-        )
-      )
-    },
-    .right: { (n: Node, args: [String: Any]?) in
-      var inner: AnyView = AnyView(Text(""))
-      switch n.renderInnerText(args) {
-      case .string(let content):
-        inner = AnyView(Text(content))
-      case .text(let content):
-        inner = AnyView(content)
-      case .view(let content):
-        inner = content
-      }
-      return .view(
-        AnyView(
-          HStack(spacing: 0) {
-            Spacer()
-            inner
-          }
-        )
-      )
     },
     .list: { (n: Node, args: [String: Any]?) in
       var inner: AnyView = AnyView(Text(""))
@@ -193,6 +149,60 @@ var textRenders: [BBType: TextRender] {
         return .text(Text("• "))
       }
     },
+    .center: { (n: Node, args: [String: Any]?) in
+      var inner: AnyView = AnyView(Text(""))
+      switch n.renderInnerText(args) {
+      case .string(let content):
+        inner = AnyView(Text(content))
+      case .text(let content):
+        inner = AnyView(content)
+      case .view(let content):
+        inner = content
+      }
+      return .view(
+        AnyView(
+          VStack(alignment: .center, spacing: 0) {
+            inner.multilineTextAlignment(.center)
+          }.frame(maxWidth: .infinity, alignment: .center)
+        )
+      )
+    },
+    .left: { (n: Node, args: [String: Any]?) in
+      var inner: AnyView = AnyView(Text(""))
+      switch n.renderInnerText(args) {
+      case .string(let content):
+        inner = AnyView(Text(content))
+      case .text(let content):
+        inner = AnyView(content)
+      case .view(let content):
+        inner = content
+      }
+      return .view(
+        AnyView(
+          VStack(alignment: .leading, spacing: 0) {
+            inner.multilineTextAlignment(.leading)
+          }.frame(maxWidth: .infinity, alignment: .leading)
+        )
+      )
+    },
+    .right: { (n: Node, args: [String: Any]?) in
+      var inner: AnyView = AnyView(Text(""))
+      switch n.renderInnerText(args) {
+      case .string(let content):
+        inner = AnyView(Text(content))
+      case .text(let content):
+        inner = AnyView(content)
+      case .view(let content):
+        inner = content
+      }
+      return .view(
+        AnyView(
+          VStack(alignment: .trailing, spacing: 0) {
+            inner.multilineTextAlignment(.trailing)
+          }.frame(maxWidth: .infinity, alignment: .trailing)
+        )
+      )
+    },
     .align: { (n: Node, args: [String: Any]?) in
       var inner: AnyView = AnyView(Text(""))
       switch n.renderInnerText(args) {
@@ -207,25 +217,27 @@ var textRenders: [BBType: TextRender] {
       case "left":
         return .view(
           AnyView(
-            HStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
               inner
-              Spacer()
-            }))
+            }.frame(maxWidth: .infinity, alignment: .leading)
+          )
+        )
       case "right":
         return .view(
           AnyView(
-            HStack(spacing: 0) {
-              Spacer()
+            VStack(alignment: .trailing, spacing: 0) {
               inner
-            }))
+            }.frame(maxWidth: .infinity, alignment: .trailing)
+          )
+        )
       case "center":
         return .view(
           AnyView(
-            HStack(spacing: 0) {
-              Spacer()
+            VStack(alignment: .center, spacing: 0) {
               inner
-              Spacer()
-            }))
+            }.frame(maxWidth: .infinity, alignment: .center)
+          )
+        )
       default:
         return .view(inner)
       }

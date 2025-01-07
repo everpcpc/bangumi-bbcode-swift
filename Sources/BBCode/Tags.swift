@@ -69,7 +69,7 @@ struct TagInfo {
 struct TagDescription {
   let tagNeeded: Bool
   let isSelfClosing: Bool
-  let allowedChildren: [BBType]?  // Allowed sub-elements of this element
+  let allowedChildren: [BBType]?
   let allowAttr: Bool
   let isBlock: Bool
 
@@ -96,9 +96,11 @@ enum BBType: Int {
   case list, listitem
   case smilies
   case subject, user
-  case background, avatar
+  case background, avatar, float
 
-  static let unsupported: [BBType] = [.background, .avatar]
+  static let unsupported: [BBType] = [.background, .avatar, .float]
+  static let layout: [BBType] = [.center, .left, .right, .align]
+  static let textStyle: [BBType] = [.bold, .italic, .underline, .delete, .color, .size]
 }
 
 let tags: [TagInfo] = [
@@ -108,11 +110,10 @@ let tags: [TagInfo] = [
       tagNeeded: false, isSelfClosing: false,
       allowedChildren: [
         .plain, .br, .paragraphStart, .paragraphEnd,
-        .bold, .italic, .underline, .delete, .color,
-        .mask, .size, .quote, .code, .url, .image,
-        .center, .left, .right, .align, .smilies, .photo,
+        .mask, .quote, .code, .url, .image,
+        .smilies, .photo,
         .list, .subject, .user,
-      ] + BBType.unsupported,
+      ] + BBType.unsupported + BBType.layout + BBType.textStyle,
       allowAttr: false,
       isBlock: true
     )
@@ -194,9 +195,8 @@ let tags: [TagInfo] = [
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
       allowedChildren: [
-        .br, .bold, .italic, .underline, .delete, .color,
-        .mask, .size, .quote, .code, .url, .image, .subject, .user,
-      ] + BBType.unsupported,
+        .br, .mask, .quote, .code, .url, .image, .subject, .user,
+      ] + BBType.unsupported + BBType.layout + BBType.textStyle,
       allowAttr: false,
       isBlock: true
     )
@@ -206,9 +206,8 @@ let tags: [TagInfo] = [
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
       allowedChildren: [
-        .br, .bold, .italic, .underline, .delete, .color,
-        .mask, .size, .quote, .code, .url, .image, .subject, .user,
-      ] + BBType.unsupported,
+        .br, .mask, .quote, .code, .url, .image, .subject, .user,
+      ] + BBType.unsupported + BBType.layout + BBType.textStyle,
       allowAttr: false,
       isBlock: true
     )
@@ -218,9 +217,8 @@ let tags: [TagInfo] = [
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
       allowedChildren: [
-        .br, .bold, .italic, .underline, .delete, .color,
-        .mask, .size, .quote, .code, .url, .image, .subject, .user,
-      ] + BBType.unsupported,
+        .br, .mask, .quote, .code, .url, .image, .subject, .user,
+      ] + BBType.unsupported + BBType.layout + BBType.textStyle,
       allowAttr: false,
       isBlock: true
     )
@@ -230,9 +228,19 @@ let tags: [TagInfo] = [
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
       allowedChildren: [
-        .br, .bold, .italic, .underline, .delete, .color,
-        .mask, .size, .quote, .code, .url, .image, .subject, .user,
-      ] + BBType.unsupported,
+        .br, .mask, .size, .quote, .code, .url, .image, .subject, .user,
+      ] + BBType.unsupported + BBType.layout + BBType.textStyle,
+      allowAttr: true,
+      isBlock: true
+    )
+  ),
+  TagInfo(
+    "float", .float,
+    TagDescription(
+      tagNeeded: true, isSelfClosing: false,
+      allowedChildren: [
+        .br, .mask, .quote, .code, .url, .image, .subject, .user,
+      ] + BBType.unsupported + BBType.layout + BBType.textStyle,
       allowAttr: true,
       isBlock: true
     )
@@ -242,9 +250,8 @@ let tags: [TagInfo] = [
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
       allowedChildren: [
-        .list, .listitem, .br, .bold, .italic,
-        .underline, .delete, .color, .url, .subject, .user,
-      ] + BBType.unsupported,
+        .list, .listitem, .br, .url, .subject, .user,
+      ] + BBType.unsupported + BBType.textStyle,
       allowAttr: false,
       isBlock: true
     )
@@ -254,8 +261,8 @@ let tags: [TagInfo] = [
     TagDescription(
       tagNeeded: true, isSelfClosing: true,
       allowedChildren: [
-        .br, .bold, .italic, .underline, .delete, .color, .url, .subject, .user,
-      ] + BBType.unsupported,
+        .br, .url, .subject, .user,
+      ] + BBType.unsupported + BBType.textStyle,
       allowAttr: false,
       isBlock: true
     )
@@ -273,10 +280,8 @@ let tags: [TagInfo] = [
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
       allowedChildren: [
-        .br, .bold, .italic, .underline, .delete,
-        .color, .mask, .size, .quote, .code, .url,
-        .image, .smilies, .subject, .user,
-      ] + BBType.unsupported,
+        .br, .mask, .quote, .code, .url, .image, .smilies, .subject, .user,
+      ] + BBType.unsupported + BBType.layout,
       allowAttr: false,
       isBlock: true
     )
@@ -286,9 +291,8 @@ let tags: [TagInfo] = [
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
       allowedChildren: [
-        .image, .color, .size,
-        .bold, .italic, .underline, .delete, .br,
-      ] + BBType.unsupported,
+        .image, .br,
+      ] + BBType.unsupported + BBType.textStyle,
       allowAttr: true, isBlock: false
     )
   ),
@@ -311,10 +315,8 @@ let tags: [TagInfo] = [
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
       allowedChildren: [
-        .br, .italic, .delete, .underline,
-        .url, .color, .subject, .user,
-      ]
-        + BBType.unsupported,
+        .br, .url, .subject, .user,
+      ] + BBType.unsupported + BBType.layout + BBType.textStyle,
       allowAttr: false,
       isBlock: false
     )
@@ -324,10 +326,8 @@ let tags: [TagInfo] = [
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
       allowedChildren: [
-        .br, .bold, .delete, .underline,
-        .url, .color, .subject, .user,
-      ]
-        + BBType.unsupported,
+        .br, .url, .subject, .user,
+      ] + BBType.unsupported + BBType.textStyle,
       allowAttr: false,
       isBlock: false
     )
@@ -337,9 +337,8 @@ let tags: [TagInfo] = [
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
       allowedChildren: [
-        .br, .bold, .italic, .delete,
-        .url, .color, .subject, .user,
-      ] + BBType.unsupported,
+        .br, .url, .subject, .user,
+      ] + BBType.unsupported + BBType.textStyle,
       allowAttr: false,
       isBlock: false
     )
@@ -349,9 +348,8 @@ let tags: [TagInfo] = [
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
       allowedChildren: [
-        .br, .bold, .italic, .underline,
-        .url, .color, .subject, .user,
-      ] + BBType.unsupported,
+        .br, .url, .subject, .user,
+      ] + BBType.unsupported + BBType.textStyle,
       allowAttr: false,
       isBlock: false
     )
@@ -361,9 +359,8 @@ let tags: [TagInfo] = [
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
       allowedChildren: [
-        .br, .bold, .delete, .italic, .underline,
-        .size, .left, .right, .center, .align, .url, .subject, .user,
-      ] + BBType.unsupported,
+        .br, .url, .subject, .user,
+      ] + BBType.unsupported + BBType.layout + BBType.textStyle,
       allowAttr: true,
       isBlock: false
     )
@@ -373,11 +370,9 @@ let tags: [TagInfo] = [
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
       allowedChildren: [
-        .bold, .italic, .delete, .underline, .color,
-        .url, .left, .right, .center, .align, .mask,
-        .smilies, .br, .subject, .user,
-      ]
-        + BBType.unsupported, allowAttr: true,
+        .url, .mask, .smilies, .br, .subject, .user,
+      ] + BBType.unsupported + BBType.layout + BBType.textStyle,
+      allowAttr: true,
       isBlock: false
     )
   ),
@@ -386,10 +381,8 @@ let tags: [TagInfo] = [
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
       allowedChildren: [
-        .br, .bold, .delete, .underline,
-        .italic, .size, .subject, .user,
-      ]
-        + BBType.unsupported,
+        .br, .subject, .user,
+      ] + BBType.unsupported + BBType.textStyle,
       allowAttr: false,
       isBlock: true
     )

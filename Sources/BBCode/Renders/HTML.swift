@@ -52,6 +52,9 @@ var htmlRenders: [BBType: HTMLRender] {
     .background: { (n: Node, args: [String: Any]?) in
       return ""
     },
+    .float: { (n: Node, args: [String: Any]?) in
+      return n.renderInnerHTML(args)
+    },
     .root: { (n: Node, args: [String: Any]?) in
       return n.renderInnerHTML(args)
     },
