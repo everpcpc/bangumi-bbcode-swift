@@ -447,7 +447,10 @@ var textRenders: [BBType: TextRender] {
               .aspectRatio(contentMode: .fit)
               .frame(maxWidth: CGFloat(width))
           } placeholder: {
-            Image(systemName: "photo")
+            ProgressView()
+          }
+          .contextMenu {
+            ShareLink(item: link)
           }
         )
       )
@@ -473,7 +476,10 @@ var textRenders: [BBType: TextRender] {
               .aspectRatio(contentMode: .fit)
               .frame(maxWidth: CGFloat(width))
           } placeholder: {
-            Image(systemName: "photo")
+            ProgressView()
+          }
+          .contextMenu {
+            ShareLink(item: link)
           }
         )
       )

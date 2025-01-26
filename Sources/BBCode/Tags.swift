@@ -281,7 +281,7 @@ let tags: [TagInfo] = [
       tagNeeded: true, isSelfClosing: false,
       allowedChildren: [
         .br, .mask, .quote, .code, .url, .image, .smilies, .subject, .user,
-      ] + BBType.unsupported + BBType.layout,
+      ] + BBType.unsupported + BBType.layout + BBType.textStyle,
       allowAttr: false,
       isBlock: true
     )
