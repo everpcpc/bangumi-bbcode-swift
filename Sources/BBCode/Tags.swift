@@ -27,6 +27,7 @@ class TagManager {
   }
 
   func getType(str: String) -> BBType? {
+    let str = str.lowercased()
     for tag in tags {
       if tag.label == str {
         return tag.type
@@ -36,6 +37,7 @@ class TagManager {
   }
 
   func getInfo(str: String) -> TagInfo? {
+    let str = str.lowercased()
     for tag in tags {
       if tag.label == str {
         return tag
