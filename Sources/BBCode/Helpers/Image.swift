@@ -34,7 +34,7 @@ struct ImageView: View {
   #if canImport(UIKit)
     func saveImage() {
       Task {
-        guard let data = try? await URLSession.shared.data(from: imageURL).0 else { return }
+        guard let data = try? await URLSession.shared.data(from: url).0 else { return }
         guard let img = UIImage(data: data) else { return }
         UIImageWriteToSavedPhotosAlbum(img, nil, nil, nil)
       }
