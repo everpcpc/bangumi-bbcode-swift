@@ -437,23 +437,7 @@ var textRenders: [BBType: TextRender] {
       guard let link = URL(string: url) else {
         return .string(AttributedString(n.value))
       }
-      return .view(
-        AnyView(
-          AsyncImage(url: link) { image in
-            let renderer = ImageRenderer(content: image)
-            let width = renderer.cgImage?.width ?? 360
-            image
-              .resizable()
-              .aspectRatio(contentMode: .fit)
-              .frame(maxWidth: CGFloat(width))
-          } placeholder: {
-            ProgressView()
-          }
-          .contextMenu {
-            ShareLink(item: link)
-          }
-        )
-      )
+      return .view(AnyView(ImageView(url: link)))
     },
     .photo: { (n: Node, args: [String: Any]?) in
       var url = "https://lain.bgm.tv/pic/photo/l/"
@@ -466,23 +450,7 @@ var textRenders: [BBType: TextRender] {
       guard let link = URL(string: url) else {
         return .string(AttributedString(n.value))
       }
-      return .view(
-        AnyView(
-          AsyncImage(url: link) { image in
-            let renderer = ImageRenderer(content: image)
-            let width = renderer.cgImage?.width ?? 360
-            image
-              .resizable()
-              .aspectRatio(contentMode: .fit)
-              .frame(maxWidth: CGFloat(width))
-          } placeholder: {
-            ProgressView()
-          }
-          .contextMenu {
-            ShareLink(item: link)
-          }
-        )
-      )
+      return .view(AnyView(ImageView(url: link)))
     },
     .bold: { (n: Node, args: [String: Any]?) in
       let inner = n.renderInnerText(args)
