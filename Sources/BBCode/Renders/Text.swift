@@ -425,19 +425,29 @@ var textRenders: [BBType: TextRender] {
       }
     },
     .image: { (n: Node, args: [String: Any]?) in
-      var url = n.attr
-      if url.isEmpty {
-        switch n.renderInnerText(args) {
-        case .string(let content):
-          url = String(content.characters)
-        default:
+      switch n.renderInnerText(args) {
+      case .string(let content):
+        let url = String(content.characters)
+        guard let link = URL(string: url) else {
           return .string(AttributedString(n.value))
         }
-      }
-      guard let link = URL(string: url) else {
+        let size = n.attr.split(separator: ",")
+        if size.count == 2 {
+          let width = Int(size[0]) ?? 0
+          let height = Int(size[1]) ?? 0
+          if width > 0 && height > 0 {
+            return .view(
+              AnyView(
+                ImageView(url: link)
+                  .frame(width: CGFloat(width), height: CGFloat(height))
+              )
+            )
+          }
+        }
+        return .view(AnyView(ImageView(url: link)))
+      default:
         return .string(AttributedString(n.value))
       }
-      return .view(AnyView(ImageView(url: link)))
     },
     .photo: { (n: Node, args: [String: Any]?) in
       var url = "https://lain.bgm.tv/pic/photo/l/"
