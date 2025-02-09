@@ -256,7 +256,7 @@ var textRenders: [BBType: TextRender] {
         AnyView(
           inner
             .font(.system(.footnote, design: .monospaced))
-            .padding(12)
+            .padding(.horizontal, 12)
             .overlay {
               RoundedRectangle(cornerRadius: 8)
                 .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
@@ -278,14 +278,24 @@ var textRenders: [BBType: TextRender] {
         AnyView(
           inner
             .foregroundStyle(.secondary)
-            .padding(.leading, 12)
-            .padding(.vertical, 8)
+            .padding(.horizontal, 12)
             .overlay(
-              Rectangle()
-                .frame(width: 4, alignment: .leading)
-                .foregroundStyle(Color(hex: 0xCCCCCC))
-                .offset(x: 0, y: 0), alignment: .leading
-            )
+              VStack {
+                HStack {
+                  Text("\u{201C}")
+                    .font(.title)
+                    .foregroundColor(.secondary.opacity(0.5))
+                  Spacer()
+                }
+                Spacer()
+                HStack {
+                  Spacer()
+                  Text("\u{201D}")
+                    .font(.title)
+                    .foregroundColor(.secondary.opacity(0.5))
+                }
+              }
+            ).padding(.vertical, 4)
         )
       )
     },
