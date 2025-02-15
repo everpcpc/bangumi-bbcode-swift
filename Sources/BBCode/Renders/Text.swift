@@ -276,26 +276,23 @@ var textRenders: [BBType: TextRender] {
       }
       return .view(
         AnyView(
-          inner
-            .foregroundStyle(.secondary)
-            .padding(.horizontal, 12)
-            .overlay(
-              VStack {
-                HStack {
-                  Text("\u{201C}")
-                    .font(.title)
-                    .foregroundColor(.secondary.opacity(0.5))
-                  Spacer()
-                }
-                Spacer()
-                HStack {
-                  Spacer()
-                  Text("\u{201D}")
-                    .font(.title)
-                    .foregroundColor(.secondary.opacity(0.5))
-                }
-              }
-            ).padding(.vertical, 4)
+          HStack(spacing: 4) {
+            VStack {
+              Text("\u{201C}")
+                .font(.title)
+                .foregroundColor(.secondary.opacity(0.5))
+              Spacer()
+            }
+            inner.foregroundStyle(.secondary)
+            VStack {
+              Spacer()
+              Text("\u{201D}")
+                .font(.title)
+                .foregroundColor(.secondary.opacity(0.5))
+            }
+          }
+          .padding(.leading, 4)
+          .padding(.vertical, 4)
         )
       )
     },
