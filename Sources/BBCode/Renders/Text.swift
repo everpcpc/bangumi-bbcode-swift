@@ -566,8 +566,14 @@ var textRenders: [BBType: TextRender] {
       if n.attr.isEmpty {
         return n.renderInnerText(args)
       }
-      guard let size = Int(n.attr) else {
+      guard var size = Int(n.attr) else {
         return n.renderInnerText(args)
+      }
+      if size < 8 {
+        size = 8
+      }
+      if size > 50 {
+        size = 50
       }
       switch n.renderInnerText(args) {
       case .string(var content):
