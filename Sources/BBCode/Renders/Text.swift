@@ -256,11 +256,13 @@ var textRenders: [BBType: TextRender] {
         AnyView(
           inner
             .font(.system(.footnote, design: .monospaced))
+            .padding(.vertical, 4)
             .padding(.horizontal, 12)
             .overlay {
               RoundedRectangle(cornerRadius: 8)
                 .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
-            }.padding(.vertical, 4)
+            }
+            .padding(.vertical, 4)
         )
       )
     },
@@ -277,19 +279,13 @@ var textRenders: [BBType: TextRender] {
       return .view(
         AnyView(
           HStack(spacing: 4) {
-            VStack {
-              Text("\u{201C}")
-                .font(.title)
-                .foregroundColor(.secondary.opacity(0.5))
-              Spacer()
-            }
+            Text("\u{201C}")
+              .font(.title)
+              .foregroundColor(.secondary.opacity(0.5))
             inner.foregroundStyle(.secondary)
-            VStack {
-              Spacer()
-              Text("\u{201D}")
-                .font(.title)
-                .foregroundColor(.secondary.opacity(0.5))
-            }
+            Text("\u{201D}")
+              .font(.title)
+              .foregroundColor(.secondary.opacity(0.5))
           }
           .padding(.leading, 4)
           .padding(.vertical, 4)
