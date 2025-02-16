@@ -254,43 +254,56 @@ var textRenders: [BBType: TextRender] {
       }
       return .view(
         AnyView(
-          inner
-            .font(.system(.footnote, design: .monospaced))
-            .padding(.vertical, 4)
-            .padding(.horizontal, 12)
-            .overlay {
-              RoundedRectangle(cornerRadius: 8)
-                .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
-            }
-            .padding(.vertical, 4)
+          VStack(alignment: .leading, spacing: 0) {
+            inner
+              .font(.system(.footnote, design: .monospaced))
+              .padding(.horizontal, 12)
+              .overlay {
+                RoundedRectangle(cornerRadius: 8)
+                  .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
+              }
+          }.padding(.vertical, 8)
         )
       )
     },
     .quote: { (n: Node, args: [String: Any]?) in
-      var inner: AnyView = AnyView(Text(""))
+      var before = AttributedString("\u{201C} ")
+      before.font = .title
+      before.foregroundColor = .secondary.opacity(0.5)
+      var after = AttributedString(" \u{201D}")
+      after.font = .title
+      after.foregroundColor = .secondary.opacity(0.5)
       switch n.renderInnerText(args) {
       case .string(let content):
-        inner = AnyView(Text(content))
-      case .text(let content):
-        inner = AnyView(content)
-      case .view(let content):
-        inner = content
-      }
-      return .view(
-        AnyView(
-          HStack(spacing: 4) {
-            Text("\u{201C}")
-              .font(.title)
-              .foregroundColor(.secondary.opacity(0.5))
-            inner.foregroundStyle(.secondary)
-            Text("\u{201D}")
-              .font(.title)
-              .foregroundColor(.secondary.opacity(0.5))
-          }
-          .padding(.leading, 4)
-          .padding(.vertical, 4)
+        var inner = content
+        inner.foregroundColor = .secondary
+        return .view(
+          AnyView(
+            VStack(alignment: .leading, spacing: 0) {
+              Text(before + inner + after)
+            }
+          )
         )
-      )
+      case .text(let content):
+        let inner = content.foregroundColor(.secondary)
+        return .view(
+          AnyView(
+            VStack(alignment: .leading, spacing: 0) {
+              Text(before) + inner + Text(after)
+            }
+          )
+        )
+      case .view(let content):
+        return .view(
+          AnyView(
+            HStack(alignment: .top, spacing: 4) {
+              Text(before)
+              content.foregroundStyle(.secondary)
+              Text(after)
+            }
+          )
+        )
+      }
     },
     .subject: { (n: Node, args: [String: Any]?) in
       let inner = n.renderInnerText(args)
