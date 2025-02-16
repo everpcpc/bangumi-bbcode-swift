@@ -30,6 +30,10 @@ struct ImageView: View {
   let url: URL
 
   @State private var width: CGFloat?
+  @State private var showPreview = false
+
+  @State private var currentZoom = 0.0
+  @State private var totalZoom = 1.0
 
   #if canImport(UIKit)
     func saveImage() {
@@ -77,7 +81,6 @@ struct ImageView: View {
       .aspectRatio(contentMode: .fit)
       .frame(maxWidth: width)
       .contextMenu {
-        ShareLink(item: url)
         Button {
           #if canImport(UIKit)
             saveImage()
@@ -89,6 +92,102 @@ struct ImageView: View {
         } label: {
           Label("保存", systemImage: "square.and.arrow.down")
         }
+        Button {
+          showPreview = true
+        } label: {
+          Label("预览", systemImage: "eye")
+        }
+        ShareLink(item: url)
       }
+      #if os(iOS)
+        .fullScreenCover(isPresented: $showPreview) {
+          ZStack {
+            Color.black
+            .ignoresSafeArea()
+
+            KFImage(url)
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .scaleEffect(currentZoom + totalZoom)
+            .gesture(
+              MagnifyGesture()
+                .onChanged { value in
+                  currentZoom = value.magnification - 1
+                }
+                .onEnded { value in
+                  totalZoom += currentZoom
+                  currentZoom = 0
+                }
+            )
+            .accessibilityZoomAction { action in
+              if action.direction == .zoomIn {
+                totalZoom += 1
+              } else {
+                totalZoom -= 1
+              }
+            }
+
+            VStack {
+              HStack {
+                Spacer()
+                Button {
+                  showPreview = false
+                } label: {
+                  Image(systemName: "xmark.circle.fill")
+                  .font(.title)
+                  .foregroundColor(.white)
+                  .padding()
+                }
+              }
+              Spacer()
+            }
+          }
+        }
+      #else
+        .sheet(isPresented: $showPreview) {
+          ZStack {
+            Color.black
+
+            KFImage(url)
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .scaleEffect(currentZoom + totalZoom)
+            .gesture(
+              MagnifyGesture()
+                .onChanged { value in
+                  currentZoom = value.magnification - 1
+                }
+                .onEnded { value in
+                  totalZoom += currentZoom
+                  currentZoom = 0
+                }
+            )
+            .accessibilityZoomAction { action in
+              if action.direction == .zoomIn {
+                totalZoom += 1
+              } else {
+                totalZoom -= 1
+              }
+            }
+
+            VStack {
+              HStack {
+                Spacer()
+                Button {
+                  showPreview = false
+                } label: {
+                  Image(systemName: "xmark.circle.fill")
+                  .font(.title)
+                  .foregroundColor(.white)
+                  .padding()
+                }
+              }
+              Spacer()
+            }
+          }
+        }
+      #endif
   }
 }
