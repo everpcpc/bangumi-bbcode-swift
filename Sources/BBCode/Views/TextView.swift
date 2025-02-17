@@ -26,6 +26,7 @@ public struct BBCodeView: View {
 
 #Preview {
   let example = """
+    [img]https://freeimage.host/i/JwFUoRp[/img]
     我是[b]粗体字[/b]
     我是[i]斜体字[/i]
     我是[u]下划线文字[/u]
