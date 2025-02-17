@@ -447,6 +447,12 @@ var textRenders: [BBType: TextRender] {
         guard let link = URL(string: url) else {
           return .string(AttributedString(n.value))
         }
+        let ext = url.split(separator: ".").last
+        if !["gif", "png", "jpg", "jpeg", "webp"].contains(ext) {
+          var content = AttributedString(url + "\n")
+          content.link = link
+          return .string(content)
+        }
         let size = n.attr.split(separator: ",")
         if size.count == 2 {
           let width = Int(size[0]) ?? 0

@@ -81,6 +81,7 @@ struct ImageView: View {
       }
       .onFailure { error in
         failed = true
+        print(error)
       }
       .fade(duration: 0.25)
       .resizable()
