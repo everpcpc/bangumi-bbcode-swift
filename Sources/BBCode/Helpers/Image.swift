@@ -135,6 +135,8 @@ public struct ImagePreviewer: View {
 
   @State private var failed = false
 
+  @Environment(\.dismiss) private var dismiss
+
   public init(url: URL) {
     self.url = url
   }
@@ -155,8 +157,19 @@ public struct ImagePreviewer: View {
           .offset(x: offset.x, y: offset.y)
           .gesture(makeDragGesture(size: proxy.size))
           .gesture(makeMagnificationGesture(size: proxy.size))
+          .onTapGesture {
+            dismiss()
+          }
       }
       .frame(maxWidth: .infinity, maxHeight: .infinity)
+      .overlay(alignment: .topTrailing) {
+        Button {
+          dismiss()
+        } label: {
+          Image(systemName: "xmark")
+            .foregroundColor(.white)
+        }.padding()
+      }
       .overlay {
         if failed {
           Image(systemName: "exclamationmark.triangle")
