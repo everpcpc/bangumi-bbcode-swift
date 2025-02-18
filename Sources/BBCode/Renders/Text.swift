@@ -268,10 +268,8 @@ var textRenders: [BBType: TextRender] {
     },
     .quote: { (n: Node, args: [String: Any]?) in
       var before = AttributedString("\u{201C} ")
-      before.font = .title
       before.foregroundColor = .secondary.opacity(0.5)
       var after = AttributedString(" \u{201D}")
-      after.font = .title
       after.foregroundColor = .secondary.opacity(0.5)
       switch n.renderInnerText(args) {
       case .string(let content):
