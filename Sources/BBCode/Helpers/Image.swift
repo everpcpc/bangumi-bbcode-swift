@@ -93,6 +93,9 @@ struct ImageView: View {
             .foregroundColor(.red)
         }
       }
+      .onTapGesture {
+        showPreview = true
+      }
       .contextMenu {
         Button {
           #if canImport(UIKit)
@@ -162,14 +165,6 @@ public struct ImagePreviewer: View {
           }
       }
       .frame(maxWidth: .infinity, maxHeight: .infinity)
-      .overlay(alignment: .topTrailing) {
-        Button {
-          dismiss()
-        } label: {
-          Image(systemName: "xmark")
-            .foregroundColor(.white)
-        }.padding()
-      }
       .overlay {
         if failed {
           Image(systemName: "exclamationmark.triangle")
