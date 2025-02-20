@@ -3,6 +3,7 @@ import SwiftUI
 
 typealias HTMLRender = (Node, [String: Any]?) -> String
 typealias TextRender = (Node, [String: Any]?) -> TextView
+typealias PlainRender = (Node, [String: Any]?) -> String
 
 enum TextView {
   case view(AnyView)
