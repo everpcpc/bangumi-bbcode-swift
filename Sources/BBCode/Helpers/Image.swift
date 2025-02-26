@@ -36,6 +36,17 @@ struct ImageView: View {
   @State private var currentZoom = 0.0
   @State private var totalZoom = 1.0
 
+  init(url: URL) {
+    if url.scheme == "http",
+      let httpsURL = URL(
+        string: url.absoluteString.replacingOccurrences(of: "http://", with: "https://"))
+    {
+      self.url = httpsURL
+    } else {
+      self.url = url
+    }
+  }
+
   #if canImport(UIKit)
     func saveImage() {
       Task {
