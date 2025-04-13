@@ -4,9 +4,27 @@ import SwiftUI
 
 typealias USIterator = String.UnicodeScalarView.Iterator
 
-protocol Parser {
-  var name: String { get }
-  func parse(_ g: inout USIterator, _ worker: Worker) -> Parser?
+enum ParserType {
+  case content
+  case tag
+  case tagClosing
+  case attr
+  case smilies
+
+  func parse(_ g: inout USIterator, _ worker: Worker) -> ParserType? {
+    switch self {
+    case .content:
+      return parseContent(&g, worker)
+    case .tag:
+      return parseTag(&g, worker)
+    case .tagClosing:
+      return parseTagClosing(&g, worker)
+    case .attr:
+      return parseAttr(&g, worker)
+    case .smilies:
+      return parseSmilies(&g, worker)
+    }
+  }
 }
 
 class Node {
@@ -67,20 +85,13 @@ class Worker {
 
   func parse(_ bbcode: String) -> Node? {
     var g: USIterator = bbcode.unicodeScalars.makeIterator()
-    var parser: Parser? = ContentParser()
-
+    var parser: ParserType? = .content
     while parser != nil {
-      // HACK: force initialize parser in release build
-      Logger.parser.debug("parsing \(parser?.name ?? "nil")")
       parser = parser?.parse(&g, self)
     }
-
-    if error == nil {
-      if currentNode.type == .root {
-        return currentNode
-      }
+    if error == nil, currentNode.type == .root {
+      return currentNode
     }
-
     return nil
   }
 }
