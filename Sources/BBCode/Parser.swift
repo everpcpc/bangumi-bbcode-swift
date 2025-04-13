@@ -101,9 +101,8 @@ class Worker {
   func parse(_ bbcode: String) -> Node? {
     var g: USIterator = bbcode.unicodeScalars.makeIterator()
     var parser: Parser? = .content
-    while parser != nil {
-      Logger.parser.debug("parsing \(parser?.description ?? "nil")")
-      parser = parser?.parse(&g, self)
+    while let p = parser {
+      parser = p.parse(&g, self)
     }
     if error == nil, currentNode.type == .root {
       return currentNode
