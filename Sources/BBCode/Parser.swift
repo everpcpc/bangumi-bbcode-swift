@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 import SwiftUI
 
 typealias USIterator = String.UnicodeScalarView.Iterator
@@ -67,9 +68,9 @@ class Worker {
     var g: USIterator = bbcode.unicodeScalars.makeIterator()
     var parser: Parser? = ContentParser()
 
-    repeat {
+    while parser != nil {
       parser = parser?.parse(&g, self)
-    } while parser != nil
+    }
 
     if error == nil {
       if currentNode.type == .root {
