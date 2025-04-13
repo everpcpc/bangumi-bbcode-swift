@@ -43,7 +43,6 @@ class ContentParser: Parser {
         lastWasCR = false
 
         if c == UnicodeScalar("[") {  // <tag_start>
-          Logger.parser.debug("tag_start: \(worker.currentNode.type.description)")
           if worker.currentNode.description?.allowedChildren != nil {
             if newNode.value.isEmpty {
               worker.currentNode.children.removeLast()
@@ -52,12 +51,9 @@ class ContentParser: Parser {
           } else if !worker.currentNode.paired {
             return TagParser()
           } else {
-            Logger.parser.debug(
-              "tag_start appended to value: \(worker.currentNode.type.description)")
             newNode.value.append(Character(c))
           }
         } else if c == UnicodeScalar("(") {  // <smilies>
-          Logger.parser.debug("smilies_start: \(worker.currentNode.type.description)")
           return SmiliesParser()
         } else {  // <content>
           newNode.value.append(Character(c))

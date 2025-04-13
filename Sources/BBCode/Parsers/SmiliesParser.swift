@@ -6,13 +6,15 @@ class SmiliesParser: Parser {
     let newNode = Node(
       type: .unknown, parent: worker.currentNode, tagManager: worker.tagManager)
     worker.currentNode.children.append(newNode)
+    Logger.parser.debug("smilies start from \(worker.currentNode.type.description)")
 
     var index: Int = 0
     let smiliesNameMaxLength: Int = 8
     let smiliesRegex = try! Regex(#"bgm(?<id>\d+)"#, as: (Substring, id: Substring).self)
     while let c = g.next() {
+      Logger.parser.debug("smilies next: \(c)")
       if c == UnicodeScalar(")") {
-        Logger.parser.debug("smilies_end: \(worker.currentNode.type.description)")
+        Logger.parser.debug("smilies end: \(worker.currentNode.type.description)")
         if newNode.value.isEmpty {
           restoreSmiliesToPlain(node: newNode, c: c, worker: worker)
           return ContentParser()
