@@ -2,6 +2,10 @@ import Foundation
 import OSLog
 
 class TagParser: Parser {
+  var name: String {
+    return "tag"
+  }
+
   func parse(_ g: inout USIterator, _ worker: Worker) -> Parser? {
     //<opening_tag> ::= <opening_tag_1> | <opening_tag_2>
     let newNode = Node(

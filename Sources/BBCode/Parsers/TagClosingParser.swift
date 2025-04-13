@@ -2,6 +2,10 @@ import Foundation
 import OSLog
 
 class TagClosingParser: Parser {
+  var name: String {
+    return "tagClosing"
+  }
+
   func parse(_ g: inout USIterator, _ worker: Worker) -> Parser? {
     var tagName: String = ""
     while let c = g.next() {

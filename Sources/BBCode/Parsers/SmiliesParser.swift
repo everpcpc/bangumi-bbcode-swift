@@ -2,6 +2,10 @@ import Foundation
 import OSLog
 
 class SmiliesParser: Parser {
+  var name: String {
+    return "smilies"
+  }
+
   func parse(_ g: inout USIterator, _ worker: Worker) -> Parser? {
     let newNode = Node(
       type: .unknown, parent: worker.currentNode, tagManager: worker.tagManager)

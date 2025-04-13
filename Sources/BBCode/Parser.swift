@@ -5,6 +5,7 @@ import SwiftUI
 typealias USIterator = String.UnicodeScalarView.Iterator
 
 protocol Parser {
+  var name: String { get }
   func parse(_ g: inout USIterator, _ worker: Worker) -> Parser?
 }
 
@@ -69,6 +70,7 @@ class Worker {
     var parser: Parser? = ContentParser()
 
     while parser != nil {
+      Logger.parser.debug("parsing \(parser?.name ?? "nil")")
       parser = parser?.parse(&g, self)
     }
 

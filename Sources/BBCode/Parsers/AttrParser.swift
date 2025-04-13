@@ -2,6 +2,10 @@ import Foundation
 import OSLog
 
 class AttrParser: Parser {
+  var name: String {
+    return "attr"
+  }
+
   func parse(_ g: inout USIterator, _ worker: Worker) -> Parser? {
     while let c = g.next() {
       if c == UnicodeScalar("]") {

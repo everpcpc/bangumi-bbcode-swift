@@ -2,6 +2,10 @@ import Foundation
 import OSLog
 
 class ContentParser: Parser {
+  var name: String {
+    return "content"
+  }
+
   func parse(_ g: inout USIterator, _ worker: Worker) -> Parser? {
     var newNode = Node(
       type: .plain, parent: worker.currentNode, tagManager: worker.tagManager)
