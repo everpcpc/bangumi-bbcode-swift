@@ -7,7 +7,7 @@ class AttrParser: Parser {
       if c == UnicodeScalar("]") {
         return ContentParser()
       } else if c == UnicodeScalar(10) || c == UnicodeScalar(13) {
-        Logger.parser.error("unfinished attr: \(worker.currentNode.type.rawValue)")
+        Logger.parser.error("unfinished attr: \(worker.currentNode.type.description)")
         worker.error = BBCodeError.unfinishedAttr(
           unclosedTagDetail(unclosedNode: worker.currentNode))
         return nil
@@ -17,7 +17,7 @@ class AttrParser: Parser {
     }
 
     //unfinished attr
-    Logger.parser.error("unfinished attr: \(worker.currentNode.type.rawValue)")
+    Logger.parser.error("unfinished attr: \(worker.currentNode.type.description)")
     worker.error = BBCodeError.unfinishedAttr(unclosedTagDetail(unclosedNode: worker.currentNode))
     return nil
   }

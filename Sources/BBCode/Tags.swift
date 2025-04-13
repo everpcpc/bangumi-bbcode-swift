@@ -104,6 +104,41 @@ enum BBType: Int {
   static let unsupported: [BBType] = [.background, .avatar, .float]
   static let layout: [BBType] = [.center, .left, .right, .align]
   static let textStyle: [BBType] = [.bold, .italic, .underline, .delete, .color, .size]
+
+  var description: String {
+    switch self {
+    case .unknown: return "unknown"
+    case .root: return "root"
+    case .plain: return "plain"
+    case .br: return "br"
+    case .paragraphStart: return "paragraphStart"
+    case .paragraphEnd: return "paragraphEnd"
+    case .center: return "center"
+    case .left: return "left"
+    case .right: return "right"
+    case .align: return "align"
+    case .quote: return "quote"
+    case .code: return "code"
+    case .url: return "url"
+    case .image: return "image"
+    case .photo: return "photo"
+    case .bold: return "bold"
+    case .italic: return "italic"
+    case .underline: return "underline"
+    case .delete: return "delete"
+    case .color: return "color"
+    case .size: return "size"
+    case .mask: return "mask"
+    case .list: return "list"
+    case .listitem: return "listitem"
+    case .smilies: return "smilies"
+    case .subject: return "subject"
+    case .user: return "user"
+    case .background: return "background"
+    case .avatar: return "avatar"
+    case .float: return "float"
+    }
+  }
 }
 
 let tags: [TagInfo] = [

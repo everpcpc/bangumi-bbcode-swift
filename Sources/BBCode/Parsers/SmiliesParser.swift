@@ -12,6 +12,7 @@ class SmiliesParser: Parser {
     let smiliesRegex = try! Regex(#"bgm(?<id>\d+)"#, as: (Substring, id: Substring).self)
     while let c = g.next() {
       if c == UnicodeScalar(")") {
+        Logger.parser.debug("smilies_end: \(worker.currentNode.type.description)")
         if newNode.value.isEmpty {
           restoreSmiliesToPlain(node: newNode, c: c, worker: worker)
           return ContentParser()
@@ -45,7 +46,7 @@ class SmiliesParser: Parser {
       index = index + 1
     }
 
-    Logger.parser.error("unfinished closing tag: \(worker.currentNode.type.rawValue)")
+    Logger.parser.error("unfinished closing tag: \(worker.currentNode.type.description)")
     worker.error = BBCodeError.unfinishedClosingTag(
       unclosedTagDetail(unclosedNode: worker.currentNode))
     return nil

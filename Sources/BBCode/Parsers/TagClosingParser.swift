@@ -10,7 +10,7 @@ class TagClosingParser: Parser {
           worker.currentNode.paired = true
           guard let p = worker.currentNode.parent else {
             // should not happen
-            Logger.parser.error("bug: \(worker.currentNode.type.rawValue)")
+            Logger.parser.error("bug: \(worker.currentNode.type.description)")
             worker.error = BBCodeError.internalError("bug")
             return nil
           }
@@ -21,7 +21,7 @@ class TagClosingParser: Parser {
             if let tag = worker.tagManager.getInfo(str: tagName) {
               if allowedChildren.contains(tag.type) {
                 // not paired tag
-                Logger.parser.error("unpaired tag: \(worker.currentNode.type.rawValue)")
+                Logger.parser.error("unpaired tag: \(worker.currentNode.type.description)")
                 // worker.error = BBCodeError.unpairedTag(
                 //   unclosedTagDetail(unclosedNode: worker.currentNode))
                 return ContentParser()
@@ -54,7 +54,7 @@ class TagClosingParser: Parser {
       }
     }
 
-    Logger.parser.error("unfinished closing tag: \(worker.currentNode.type.rawValue)")
+    Logger.parser.error("unfinished closing tag: \(worker.currentNode.type.description)")
     worker.error = BBCodeError.unfinishedClosingTag(
       unclosedTagDetail(unclosedNode: worker.currentNode))
     return nil

@@ -33,7 +33,7 @@ class ContentParser: Parser {
           if worker.currentNode.type == .code {
             newNode.value.append(Character(c))
           } else {
-            Logger.parser.error("unclosed tag: \(worker.currentNode.type.rawValue)")
+            Logger.parser.error("unclosed tag: \(worker.currentNode.type.description)")
             worker.error = BBCodeError.unclosedTag(
               unclosedTagDetail(unclosedNode: worker.currentNode))
             return nil
@@ -43,7 +43,7 @@ class ContentParser: Parser {
         lastWasCR = false
 
         if c == UnicodeScalar("[") {  // <tag_start>
-          Logger.parser.debug("tag_start: \(worker.currentNode.type.rawValue)")
+          Logger.parser.debug("tag_start: \(worker.currentNode.type.description)")
           if worker.currentNode.description?.allowedChildren != nil {
             if newNode.value.isEmpty {
               worker.currentNode.children.removeLast()
@@ -52,11 +52,12 @@ class ContentParser: Parser {
           } else if !worker.currentNode.paired {
             return TagParser()
           } else {
-            Logger.parser.debug("tag_start appended to value: \(worker.currentNode.type.rawValue)")
+            Logger.parser.debug(
+              "tag_start appended to value: \(worker.currentNode.type.description)")
             newNode.value.append(Character(c))
           }
         } else if c == UnicodeScalar("(") {  // <smilies>
-          Logger.parser.debug("smilies_start: \(worker.currentNode.type.rawValue)")
+          Logger.parser.debug("smilies_start: \(worker.currentNode.type.description)")
           return SmiliesParser()
         } else {  // <content>
           newNode.value.append(Character(c))
@@ -70,7 +71,7 @@ class ContentParser: Parser {
       } else {
         // unfinished without parent
         // This should never happen
-        Logger.parser.error("unfinished without parent: \(worker.currentNode.type.rawValue)")
+        Logger.parser.error("unfinished without parent: \(worker.currentNode.type.description)")
         worker.error = BBCodeError.internalError("bug")
         return nil
       }

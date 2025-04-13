@@ -77,7 +77,7 @@ class TagParser: Parser {
       isFirst = false
     }
 
-    Logger.parser.error("unfinished opening tag: \(worker.currentNode.type.rawValue)")
+    Logger.parser.error("unfinished opening tag: \(worker.currentNode.type.description)")
     worker.error = BBCodeError.unfinishedOpeningTag(
       unclosedTagDetail(unclosedNode: worker.currentNode))
     return nil
