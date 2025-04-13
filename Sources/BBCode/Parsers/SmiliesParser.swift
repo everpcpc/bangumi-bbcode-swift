@@ -1,7 +1,7 @@
 import Foundation
 import OSLog
 
-func parseSmilies(_ g: inout USIterator, _ worker: Worker) -> ParserType? {
+func parseSmilies(_ g: inout USIterator, _ worker: Worker) -> Parser? {
   let newNode = Node(
     type: .unknown, parent: worker.currentNode, tagManager: worker.tagManager)
   worker.currentNode.children.append(newNode)

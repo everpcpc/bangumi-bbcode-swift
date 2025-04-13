@@ -1,7 +1,7 @@
 import Foundation
 import OSLog
 
-func parseTag(_ g: inout USIterator, _ worker: Worker) -> ParserType? {
+func parseTag(_ g: inout USIterator, _ worker: Worker) -> Parser? {
   //<opening_tag> ::= <opening_tag_1> | <opening_tag_2>
   let newNode = Node(
     type: .unknown, parent: worker.currentNode, tagManager: worker.tagManager)

@@ -1,7 +1,7 @@
 import Foundation
 import OSLog
 
-func parseContent(_ g: inout USIterator, _ worker: Worker) -> ParserType? {
+func parseContent(_ g: inout USIterator, _ worker: Worker) -> Parser? {
   var newNode = Node(
     type: .plain, parent: worker.currentNode, tagManager: worker.tagManager)
   worker.currentNode.children.append(newNode)

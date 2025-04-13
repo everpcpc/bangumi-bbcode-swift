@@ -1,7 +1,7 @@
 import Foundation
 import OSLog
 
-func parseTagClosing(_ g: inout USIterator, _ worker: Worker) -> ParserType? {
+func parseTagClosing(_ g: inout USIterator, _ worker: Worker) -> Parser? {
   var tagName: String = ""
   while let c = g.next() {
     if c == UnicodeScalar("]") {

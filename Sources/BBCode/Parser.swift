@@ -4,14 +4,14 @@ import SwiftUI
 
 typealias USIterator = String.UnicodeScalarView.Iterator
 
-enum ParserType {
+enum Parser {
   case content
   case tag
   case tagClosing
   case attr
   case smilies
 
-  func parse(_ g: inout USIterator, _ worker: Worker) -> ParserType? {
+  func parse(_ g: inout USIterator, _ worker: Worker) -> Parser? {
     switch self {
     case .content:
       return parseContent(&g, worker)
@@ -85,7 +85,7 @@ class Worker {
 
   func parse(_ bbcode: String) -> Node? {
     var g: USIterator = bbcode.unicodeScalars.makeIterator()
-    var parser: ParserType? = .content
+    var parser: Parser? = .content
     while parser != nil {
       parser = parser?.parse(&g, self)
     }

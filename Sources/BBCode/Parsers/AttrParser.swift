@@ -1,7 +1,7 @@
 import Foundation
 import OSLog
 
-func parseAttr(_ g: inout USIterator, _ worker: Worker) -> ParserType? {
+func parseAttr(_ g: inout USIterator, _ worker: Worker) -> Parser? {
   while let c = g.next() {
     if c == UnicodeScalar("]") {
       return .content
