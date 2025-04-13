@@ -11,7 +11,6 @@ class TagParser: Parser {
     let newNode = Node(
       type: .unknown, parent: worker.currentNode, tagManager: worker.tagManager)
     worker.currentNode.children.append(newNode)
-    Logger.parser.debug("tag start from \(worker.currentNode.type.description)")
 
     var index: Int = 0
     let tagNameMaxLength: Int = 8

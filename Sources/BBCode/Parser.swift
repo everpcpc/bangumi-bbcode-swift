@@ -70,7 +70,6 @@ class Worker {
     var parser: Parser? = ContentParser()
 
     while parser != nil {
-      Logger.parser.debug("parsing \(parser?.name ?? "nil")")
       parser = parser?.parse(&g, self)
     }
 
