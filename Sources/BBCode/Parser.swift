@@ -11,6 +11,21 @@ enum Parser {
   case attr
   case smilies
 
+  var description: String {
+    switch self {
+    case .content:
+      return "content"
+    case .tag:
+      return "tag"
+    case .tagClosing:
+      return "tagClosing"
+    case .attr:
+      return "attr"
+    case .smilies:
+      return "smilies"
+    }
+  }
+
   func parse(_ g: inout USIterator, _ worker: Worker) -> Parser? {
     switch self {
     case .content:
@@ -87,6 +102,7 @@ class Worker {
     var g: USIterator = bbcode.unicodeScalars.makeIterator()
     var parser: Parser? = .content
     while parser != nil {
+      Logger.parser.debug("parsing \(parser?.description ?? "nil")")
       parser = parser?.parse(&g, self)
     }
     if error == nil, currentNode.type == .root {
