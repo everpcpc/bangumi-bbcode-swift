@@ -69,7 +69,8 @@ class Worker {
     var g: USIterator = bbcode.unicodeScalars.makeIterator()
     var parser: Parser? = ContentParser()
 
-    while parser != nil {
+    // force initialize parser in release build
+    while parser?.name != nil {
       parser = parser?.parse(&g, self)
     }
 
