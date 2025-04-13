@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 
 class ContentParser: Parser {
   func parse(_ g: inout USIterator, _ worker: Worker) -> Parser? {
@@ -32,6 +33,7 @@ class ContentParser: Parser {
           if worker.currentNode.type == .code {
             newNode.value.append(Character(c))
           } else {
+            Logger.parser.error("unclosed tag: \(worker.currentNode.type.rawValue)")
             worker.error = BBCodeError.unclosedTag(
               unclosedTagDetail(unclosedNode: worker.currentNode))
             return nil
@@ -65,6 +67,7 @@ class ContentParser: Parser {
       } else {
         // unfinished without parent
         // This should never happen
+        Logger.parser.error("unfinished without parent: \(worker.currentNode.type.rawValue)")
         worker.error = BBCodeError.internalError("bug")
         return nil
       }

@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 
 class SmiliesParser: Parser {
   func parse(_ g: inout USIterator, _ worker: Worker) -> Parser? {
@@ -44,6 +45,7 @@ class SmiliesParser: Parser {
       index = index + 1
     }
 
+    Logger.parser.error("unfinished closing tag: \(worker.currentNode.type.rawValue)")
     worker.error = BBCodeError.unfinishedClosingTag(
       unclosedTagDetail(unclosedNode: worker.currentNode))
     return nil

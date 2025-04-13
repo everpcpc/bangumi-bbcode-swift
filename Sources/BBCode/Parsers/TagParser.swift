@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 
 class TagParser: Parser {
   func parse(_ g: inout USIterator, _ worker: Worker) -> Parser? {
@@ -76,6 +77,7 @@ class TagParser: Parser {
       isFirst = false
     }
 
+    Logger.parser.error("unfinished opening tag: \(worker.currentNode.type.rawValue)")
     worker.error = BBCodeError.unfinishedOpeningTag(
       unclosedTagDetail(unclosedNode: worker.currentNode))
     return nil
