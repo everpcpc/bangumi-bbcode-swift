@@ -445,7 +445,7 @@ var textRenders: [BBType: TextRender] {
         guard let link = URL(string: url) else {
           return .string(AttributedString(n.value))
         }
-        let allowed = ["avif", "svg", "gif", "png", "jpg", "jpeg", "webp", "mp4"]
+        let allowed = ["avif", "svg", "gif", "png", "jpg", "jpeg", "webp"]
         let ext = url.split(separator: ".").last?.lowercased() ?? "unknown"
         if !allowed.contains(ext) {
           var content = AttributedString(url + "\n")

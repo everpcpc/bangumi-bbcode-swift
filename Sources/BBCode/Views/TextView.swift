@@ -47,6 +47,7 @@ public struct BBCodeView: View {
     [img]https://static.hya.moe/execwb-publish/bgm-publish-heading.webp[/img]
     [img]https://static.hya.moe/execwb-demo.avif[/img]
     [img]https://static.hya.moe/execwb-demo.mp4[/img]
+    [img]https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/svg2009.svg[/img]
     
     代码片段：
     [code]
