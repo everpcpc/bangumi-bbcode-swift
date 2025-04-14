@@ -88,7 +88,12 @@ struct ImageView: View {
         self.width = result.image.size.width
       }
       .placeholder {
-        ProgressView()
+        if failed {
+          ProgressView()
+        } else {
+          Image(systemName: "exclamationmark.triangle")
+            .foregroundColor(.red)
+        }
       }
       .onFailure { error in
         failed = true
@@ -98,13 +103,10 @@ struct ImageView: View {
       .resizable()
       .aspectRatio(contentMode: .fit)
       .frame(maxWidth: width)
-      .overlay {
-        if failed {
-          Image(systemName: "exclamationmark.triangle")
-            .foregroundColor(.red)
-        }
-      }
       .onTapGesture {
+        if failed {
+          return
+        }
         showPreview = true
       }
       .contextMenu {
@@ -160,7 +162,13 @@ public struct ImagePreviewer: View {
       ZStack {
         KFImage(url)
           .placeholder {
-            ProgressView()
+            if failed {
+              ProgressView()
+            } else {
+              Image(systemName: "exclamationmark.triangle")
+                .font(.system(size: 40))
+                .foregroundColor(.red)
+            }
           }
           .onFailure { error in
             failed = true
@@ -176,12 +184,6 @@ public struct ImagePreviewer: View {
           }
       }
       .frame(maxWidth: .infinity, maxHeight: .infinity)
-      .overlay {
-        if failed {
-          Image(systemName: "exclamationmark.triangle")
-            .foregroundColor(.red)
-        }
-      }
       .edgesIgnoringSafeArea(.all)
     }
   }
