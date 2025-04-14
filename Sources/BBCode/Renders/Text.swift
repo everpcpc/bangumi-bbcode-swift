@@ -446,7 +446,7 @@ var textRenders: [BBType: TextRender] {
           return .string(AttributedString(n.value))
         }
         let ext = url.split(separator: ".").last
-        if !["gif", "png", "jpg", "jpeg", "webp"].contains(ext) {
+        if !["avif", "svg", "gif", "png", "jpg", "jpeg", "webp"].contains(ext?.lowercased()) {
           var content = AttributedString(url + "\n")
           content.link = link
           return .string(content)
