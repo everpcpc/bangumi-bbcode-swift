@@ -39,7 +39,10 @@ extension Node {
             strings.removeAll()
           }
           if !texts.isEmpty {
-            views.append(AnyView(texts.reduce(Text(""), +)))
+            views.append(
+              AnyView(
+                texts.reduce(Text(""), +).fixedSize(horizontal: false, vertical: true))
+            )
             texts.removeAll()
           }
           views.append(content)
@@ -52,14 +55,17 @@ extension Node {
         strings.removeAll()
       }
       if !texts.isEmpty {
-        views.append(AnyView(texts.reduce(Text(""), +)))
+        views.append(
+          AnyView(
+            texts.reduce(Text(""), +).fixedSize(horizontal: false, vertical: true))
+        )
         texts.removeAll()
       }
       return .view(
         AnyView(
           VStack(alignment: .leading, spacing: 0) {
             ForEach(views.indices, id: \.self) { i in
-              views[i].fixedSize(horizontal: false, vertical: true)
+              views[i]
             }
           }
         )
