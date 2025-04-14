@@ -10,7 +10,7 @@ let package = Package(
     .library(name: "BBCode", targets: ["BBCode"])
   ],
   dependencies: [
-    .package(url: "https://github.com/onevcat/Kingfisher.git", .upToNextMajor(from: "8.1.3"))
+    .package(url: "https://github.com/onevcat/Kingfisher.git", .upToNextMajor(from: "8.3.2"))
   ],
   targets: [
     .target(name: "BBCode", dependencies: ["Kingfisher"], resources: [.process("Resources")]),
