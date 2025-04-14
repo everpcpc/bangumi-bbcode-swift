@@ -39,10 +39,7 @@ extension Node {
             strings.removeAll()
           }
           if !texts.isEmpty {
-            views.append(
-              AnyView(
-                texts.reduce(Text(""), +).fixedSize(horizontal: false, vertical: true))
-            )
+            views.append(AnyView(texts.reduce(Text(""), +)))
             texts.removeAll()
           }
           views.append(content)
@@ -55,10 +52,7 @@ extension Node {
         strings.removeAll()
       }
       if !texts.isEmpty {
-        views.append(
-          AnyView(
-            texts.reduce(Text(""), +).fixedSize(horizontal: false, vertical: true))
-        )
+        views.append(AnyView(texts.reduce(Text(""), +)))
         texts.removeAll()
       }
       return .view(
