@@ -41,6 +41,7 @@ public struct BBCodeView: View {
     带文字说明的网站链接：[url=https://chii.in]Bangumi 番组计划[/url]
     存放于其他网络服务器的图片：[img]https://chii.in/img/ico/bgm88-31.gif[/img]
     调整图片大小[img=60,40]https://chii.in/img/ico/bgm88-31.gif[/img]
+    [img=600,400]https://chii.in/img/ico/bgm88-31.gif[/img]
     代码片段：
     [code]
     print("Hello, World!")

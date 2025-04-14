@@ -459,7 +459,7 @@ var textRenders: [BBType: TextRender] {
             return .view(
               AnyView(
                 ImageView(url: link)
-                  .frame(width: CGFloat(width), height: CGFloat(height))
+                  .frame(maxWidth: CGFloat(width), maxHeight: CGFloat(height))
               )
             )
           }
