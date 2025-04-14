@@ -59,7 +59,7 @@ extension Node {
         AnyView(
           VStack(alignment: .leading, spacing: 0) {
             ForEach(views.indices, id: \.self) { i in
-              views[i]
+              views[i].fixedSize(horizontal: false, vertical: true)
             }
           }
         )
