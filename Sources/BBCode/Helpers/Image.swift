@@ -91,7 +91,7 @@ struct ImageView: View {
           .font(.system(size: 40))
           .foregroundColor(.red)
       } else {
-        Rectangle().foregroundColor(.clear)
+        ProgressView()
       }
     }
     .onFailure { error in
@@ -171,7 +171,7 @@ public struct ImagePreviewer: View {
               .font(.system(size: 40))
               .foregroundColor(.red)
           } else {
-            Rectangle().foregroundColor(.clear)
+            ProgressView()
           }
         }
         .onFailure { error in
