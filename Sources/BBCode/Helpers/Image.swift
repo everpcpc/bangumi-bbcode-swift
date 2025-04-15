@@ -1,5 +1,5 @@
 import Foundation
-import Kingfisher
+import SDWebImageSwiftUI
 import SwiftUI
 
 extension Image {
@@ -83,60 +83,61 @@ struct ImageView: View {
   #endif
 
   var body: some View {
-    KFImage(url)
-      .onSuccess { result in
-        self.width = result.image.size.width
+    WebImage(url: url) { image in
+      image.resizable()
+    } placeholder: {
+      if failed {
+        Image(systemName: "exclamationmark.triangle")
+          .font(.system(size: 40))
+          .foregroundColor(.red)
+      } else {
+        Rectangle().foregroundColor(.clear)
       }
-      .placeholder {
-        if failed {
-          ProgressView()
-        } else {
-          Image(systemName: "exclamationmark.triangle")
-            .foregroundColor(.red)
-        }
+    }
+    .onFailure { error in
+      failed = true
+    }
+    .onSuccess { image, data, cacheType in
+      self.width = image.size.width
+    }
+    .indicator(.activity)
+    .transition(.fade(duration: 0.25))
+    .scaledToFit()
+    .frame(maxWidth: width)
+    .onTapGesture {
+      if failed {
+        return
       }
-      .onFailure { error in
-        failed = true
-        print(error)
+      showPreview = true
+    }
+    .contextMenu {
+      Button {
+        #if canImport(UIKit)
+          saveImage()
+        #elseif canImport(AppKit)
+          if let path = showSavePanel() {
+            savePNG(imageName: url.lastPathComponent, path: path)
+          }
+        #endif
+      } label: {
+        Label("保存", systemImage: "square.and.arrow.down")
       }
-      .fade(duration: 0.25)
-      .resizable()
-      .aspectRatio(contentMode: .fit)
-      .frame(maxWidth: width)
-      .onTapGesture {
-        if failed {
-          return
-        }
+      Button {
         showPreview = true
+      } label: {
+        Label("预览", systemImage: "eye")
       }
-      .contextMenu {
-        Button {
-          #if canImport(UIKit)
-            saveImage()
-          #elseif canImport(AppKit)
-            if let path = showSavePanel() {
-              savePNG(imageName: url.lastPathComponent, path: path)
-            }
-          #endif
-        } label: {
-          Label("保存", systemImage: "square.and.arrow.down")
-        }
-        Button {
-          showPreview = true
-        } label: {
-          Label("预览", systemImage: "eye")
-        }
-        ShareLink(item: url)
+      ShareLink(item: url)
+    }
+    #if os(iOS)
+      .fullScreenCover(isPresented: $showPreview) {
+        ImagePreviewer(url: url)
       }
-      #if os(iOS)
-        .fullScreenCover(isPresented: $showPreview) {
-          ImagePreviewer(url: url)
-        }
-      #else
-        .sheet(isPresented: $showPreview) {
-          ImagePreviewer(url: url)
-        }
-      #endif
+    #else
+      .sheet(isPresented: $showPreview) {
+        ImagePreviewer(url: url)
+      }
+    #endif
   }
 }
 
@@ -160,28 +161,31 @@ public struct ImagePreviewer: View {
   public var body: some View {
     GeometryReader { proxy in
       ZStack {
-        KFImage(url)
-          .placeholder {
-            if failed {
-              ProgressView()
-            } else {
-              Image(systemName: "exclamationmark.triangle")
-                .font(.system(size: 40))
-                .foregroundColor(.red)
-            }
+        WebImage(url: url) { image in
+          image
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+        } placeholder: {
+          if failed {
+            Image(systemName: "exclamationmark.triangle")
+              .font(.system(size: 40))
+              .foregroundColor(.red)
+          } else {
+            Rectangle().foregroundColor(.clear)
           }
-          .onFailure { error in
-            failed = true
-          }
-          .resizable()
-          .aspectRatio(contentMode: .fit)
-          .scaleEffect(scale)
-          .offset(x: offset.x, y: offset.y)
-          .gesture(makeDragGesture(size: proxy.size))
-          .gesture(makeMagnificationGesture(size: proxy.size))
-          .onTapGesture {
-            dismiss()
-          }
+        }
+        .onFailure { error in
+          failed = true
+        }
+        .indicator(.activity)
+        .transition(.fade(duration: 0.25))
+        .scaleEffect(scale)
+        .offset(x: offset.x, y: offset.y)
+        .gesture(makeDragGesture(size: proxy.size))
+        .gesture(makeMagnificationGesture(size: proxy.size))
+        .onTapGesture {
+          dismiss()
+        }
       }
       .frame(maxWidth: .infinity, maxHeight: .infinity)
       .edgesIgnoringSafeArea(.all)
