@@ -127,6 +127,7 @@ enum WebColor: Int, CaseIterable {
   case chamoisee = 0xa0785a
   case champagne = 0xfad6a5
   case charcoal = 0x36454f
+  case chartreuse = 0xdfff00
   case chestnut = 0xcd5c5c
   case cinereous = 0x98817b
   case cinnabar = 0xe34234
@@ -143,6 +144,7 @@ enum WebColor: Int, CaseIterable {
   case crimson = 0xdc143c
   case cyan = 0x00ffff
   case daffodil = 0xffff31
+  case darkorange =0xff8c00
   case dandelion = 0xf0e130
   case denim = 0x1560bd
   case dirt = 0x9b7653
@@ -161,9 +163,11 @@ enum WebColor: Int, CaseIterable {
   case ginger = 0xb06500
   case glaucous = 0x6082b6
   case glitter = 0xe6e8fa
+  case gold = 0xffd700
   case grape = 0x6f2da8
   case gray = 0x808080
   case green = 0x00ff00
+  case greenyellow = 0xadff2f
   case grullo = 0xa99a86
   case harlequin = 0x3fff00
   case heliotrope = 0xdf73ff
@@ -204,6 +208,7 @@ enum WebColor: Int, CaseIterable {
   case olivine = 0x9ab973
   case onyx = 0x353839
   case orange = 0xffa500
+  case orangered = 0xff4500
   case orchid = 0xda70d6
   case pear = 0xd1e231
   case pearl = 0xeae0c8
@@ -271,5 +276,6 @@ enum WebColor: Int, CaseIterable {
   case wisteria = 0xc9a0dc
   case xanadu = 0x738678
   case yellow = 0xffff00
+  case yellowgreen = 0x9acd32
   case zaffre = 0x0014a8
 }
