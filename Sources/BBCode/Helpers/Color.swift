@@ -144,7 +144,7 @@ enum WebColor: Int, CaseIterable {
   case crimson = 0xdc143c
   case cyan = 0x00ffff
   case daffodil = 0xffff31
-  case darkorange =0xff8c00
+  case darkorange = 0xff8c00
   case dandelion = 0xf0e130
   case denim = 0x1560bd
   case dirt = 0x9b7653
