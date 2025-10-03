@@ -10,7 +10,7 @@ public struct BBCodeView: View {
   }
 
   public var body: some View {
-    switch BBCode().text(code) {
+    switch BBCode().text(code, args: ["textSize": textSize]) {
     case .string(let content):
       Text(content)
         .font(.system(size: CGFloat(textSize)))
@@ -54,10 +54,9 @@ public struct BBCodeView: View {
     print("Hello, World!")
     exit(0)
     [/code]
-    (bgm38)
-    (bgm24)
-    (bmoCAoAEghP8A4BNgiKWBA)
-    (bmoCArACghOkAoBNgiKGAg)
+    (bgm38) (bgm24)
+    (bmoCAoAEghP8A4BNgiKWBA) 紫色的
+    绿色的 (bmoCArACghOkAoBNgiKGAg)
     [quote]引用的片段[/quote]
     [photo=104569]4b/d1/873244_3p4I7.jpg[/photo]
     [subject=12]ちぃでかける[/subject]

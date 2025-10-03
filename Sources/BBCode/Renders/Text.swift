@@ -628,10 +628,12 @@ var textRenders: [BBType: TextRender] {
     },
     .bgm: { (n: Node, args: [String: Any]?) in
       let img = Image(packageResource: "bgm\(n.attr)", ofType: "gif")
-      return .text(Text(img))
+      let textSize = args?["textSize"] as? Int ?? 16
+      return .text(Text(img).font(.system(size: CGFloat(textSize))))
     },
     .bmo: { (n: Node, args: [String: Any]?) in
       let bmoCode = n.attr
+      let textSize = args?["textSize"] as? Int ?? 16
       // Decode the BMO code to get emoji information
       let bmoResult = BmoDecoder.decode(bmoCode)
 
@@ -641,8 +643,8 @@ var textRenders: [BBType: TextRender] {
       }
 
       // Render the BMO emoji as SwiftUI Image
-      if let image = BmoRenderer.renderImage(from: bmoResult) {
-        return .text(Text(image))
+      if let image = BmoRenderer.renderImage(from: bmoResult, textSize: textSize + 4) {
+        return .text(Text(image).font(.system(size: CGFloat(textSize))))
       }
 
       // Fallback to placeholder text

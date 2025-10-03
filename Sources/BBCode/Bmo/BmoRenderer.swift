@@ -9,14 +9,15 @@ struct BmoRenderer {
   // Render BMO emoji as SwiftUI Image
   @MainActor
   static func renderImage(
-    from result: BmoDecoder.BmoResult, size: CGSize = CGSize(width: 63, height: 63)
+    from result: BmoDecoder.BmoResult, size: CGSize? = nil, textSize: Int = 16
   ) -> Image? {
+    let emojiSize = size ?? CGSize(width: CGFloat(textSize), height: CGFloat(textSize))
     guard !result.items.isEmpty else {
       return nil
     }
 
     // Render as CGImage first
-    guard let cgImage = renderCGImage(from: result, size: size) else {
+    guard let cgImage = renderCGImage(from: result, size: emojiSize) else {
       return nil
     }
 
@@ -26,8 +27,9 @@ struct BmoRenderer {
 
   // Render BMO emoji as CGImage
   static func renderCGImage(
-    from result: BmoDecoder.BmoResult, size: CGSize = CGSize(width: 63, height: 63)
+    from result: BmoDecoder.BmoResult, size: CGSize? = nil, textSize: Int = 16
   ) -> CGImage? {
+    let emojiSize = size ?? CGSize(width: CGFloat(textSize), height: CGFloat(textSize))
     guard !result.items.isEmpty else {
       return nil
     }
@@ -42,8 +44,8 @@ struct BmoRenderer {
     guard
       let context = CGContext(
         data: nil,
-        width: Int(size.width),
-        height: Int(size.height),
+        width: Int(emojiSize.width),
+        height: Int(emojiSize.height),
         bitsPerComponent: 8,
         bytesPerRow: 0,
         space: colorSpace,
@@ -53,11 +55,11 @@ struct BmoRenderer {
     }
 
     // Clear background
-    context.clear(CGRect(origin: .zero, size: size))
+    context.clear(CGRect(origin: .zero, size: emojiSize))
 
     // Draw each layer
     for item in sortedItems {
-      drawItem(item, in: context, size: size)
+      drawItem(item, in: context, size: emojiSize)
     }
 
     return context.makeImage()

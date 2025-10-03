@@ -128,7 +128,7 @@ class HTMLTests: XCTestCase {
   func testSmilies() {
     XCTAssertEqual(
       try BBCode().html("表情符号：(bgm38)"),
-      "表情符号：<img src=\"https://lain.bgm.tv/img/smiles/tv/15.gif\" alt=\"(bgm38)\" />"
+      "表情符号：<img src=\"https://lain.bgm.tv/img/smiles/tv/15.gif\" alt=\"(bgm38)\" style=\"width: 16px; height: 16px;\" />"
     )
   }
 
@@ -137,7 +137,7 @@ class HTMLTests: XCTestCase {
     // BMO should now render as an actual image with base64 data URL
     XCTAssertTrue(result.contains("BMO表情：<img src=\"data:image/png;base64,"))
     XCTAssertTrue(result.contains("alt=\"(bmoCAkiCE0CATYIiNA)\""))
-    XCTAssertTrue(result.contains("style=\"width: 63px; height: 63px;\""))
+    XCTAssertTrue(result.contains("style=\"width: 16px; height: 16px;\""))
   }
 
   func testBmoEmpty() {
