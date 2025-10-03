@@ -310,7 +310,8 @@ struct VarReader {
   // ZigZag decoding
   private func decodeZigZag(_ value: UInt32) -> Int32 {
     let unsigned = UInt32(value)
-    return Int32((unsigned >> 1) ^ UInt32(-Int32(unsigned & 1)))
+    let mask = (unsigned & 1) == 1 ? UInt32.max : 0
+    return Int32((unsigned >> 1) ^ mask)
   }
 }
 
