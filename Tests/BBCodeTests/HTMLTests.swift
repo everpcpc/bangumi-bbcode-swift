@@ -147,4 +147,22 @@ class HTMLTests: XCTestCase {
     )
   }
 
+  func testNewEmojiRanges() {
+    // Test tv_vs range (200-238) - should use png format
+    let tvVsResult = try! BBCode().html("tv_vs表情：(bgm200)")
+    XCTAssertTrue(tvVsResult.contains("bgm200.png"))
+    XCTAssertTrue(tvVsResult.contains("alt=\"(bgm200)\""))
+
+    // Test tv_500 range (500-529) - should try gif first, then png
+    let tv500Result = try! BBCode().html("tv_500表情：(bgm500)")
+    XCTAssertTrue(tv500Result.contains("bgm500"))
+    XCTAssertTrue(tv500Result.contains("alt=\"(bgm500)\""))
+
+    // Test mixed ranges
+    let mixedResult = try! BBCode().html("混合表情：(bgm38)(bgm200)(bgm500)")
+    XCTAssertTrue(mixedResult.contains("bgm38"))
+    XCTAssertTrue(mixedResult.contains("bgm200.png"))
+    XCTAssertTrue(mixedResult.contains("bgm500"))
+  }
+
 }

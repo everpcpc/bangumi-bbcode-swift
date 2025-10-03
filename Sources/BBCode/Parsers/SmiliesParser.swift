@@ -31,7 +31,9 @@ func parseSmilies(_ g: inout USIterator, _ worker: Worker) -> Parser? {
       // Check if this is a bgm code
       if let match = newNode.value.wholeMatch(of: bgmRegex) {
         let bgmId = Int(match.id) ?? 0
-        if bgmId < 24 || bgmId > 125 {
+        if (bgmId < 24 || bgmId > 125) && (bgmId < 200 || bgmId > 238)
+          && (bgmId < 500 || bgmId > 529)
+        {
           restoreSmiliesToPlain(node: newNode, c: c, worker: worker)
           return .content
         }

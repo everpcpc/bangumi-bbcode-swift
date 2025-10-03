@@ -627,8 +627,29 @@ var textRenders: [BBType: TextRender] {
       )
     },
     .bgm: { (n: Node, args: [String: Any]?) in
-      let img = Image(packageResource: "bgm\(n.attr)", ofType: "gif")
+      let bgmId = Int(n.attr) ?? 24
       let textSize = args?["textSize"] as? Int ?? 16
+
+      // Try to load image with fallback for different formats
+      let img: Image
+      if bgmId >= 24 && bgmId <= 125 {
+        // Original range - try gif first
+        img = Image(packageResource: "bgm\(bgmId)", ofType: "gif")
+      } else if bgmId >= 200 && bgmId <= 238 {
+        // tv_vs range - use png format
+        img = Image(packageResource: "bgm\(bgmId)", ofType: "png")
+      } else if bgmId >= 500 && bgmId <= 529 {
+        // tv_500 range - try gif first, then png
+        if Bundle.module.path(forResource: "bgm\(bgmId)", ofType: "gif") != nil {
+          img = Image(packageResource: "bgm\(bgmId)", ofType: "gif")
+        } else {
+          img = Image(packageResource: "bgm\(bgmId)", ofType: "png")
+        }
+      } else {
+        // Fallback - try gif
+        img = Image(packageResource: "bgm\(bgmId)", ofType: "gif")
+      }
+
       return .text(Text(img).font(.system(size: CGFloat(textSize))))
     },
     .bmo: { (n: Node, args: [String: Any]?) in
