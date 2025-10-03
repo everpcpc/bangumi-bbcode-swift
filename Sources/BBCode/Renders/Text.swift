@@ -2,7 +2,7 @@ import SwiftUI
 
 extension BBCode {
   @MainActor
-  func text(_ bbcode: String, args: [String: Any]? = nil) -> TextView {
+  public func text(_ bbcode: String, args: [String: Any]? = nil) -> TextView {
     let worker: Worker = Worker(tagManager: tagManager)
     if let tree = worker.parse(bbcode) {
       handleTextNewlines(node: tree, tagManager: tagManager)
@@ -626,9 +626,27 @@ var textRenders: [BBType: TextRender] {
         )
       )
     },
-    .smilies: { (n: Node, args: [String: Any]?) in
+    .bgm: { (n: Node, args: [String: Any]?) in
       let img = Image(packageResource: "bgm\(n.attr)", ofType: "gif")
       return .text(Text(img))
+    },
+    .bmo: { (n: Node, args: [String: Any]?) in
+      let bmoCode = n.attr
+      // Decode the BMO code to get emoji information
+      let bmoResult = BmoDecoder.decode(bmoCode)
+
+      if bmoResult.items.isEmpty {
+        // If no items found, return the original code as text
+        return .string(AttributedString("(\(bmoCode))"))
+      }
+
+      // Render the BMO emoji as SwiftUI Image
+      if let image = BmoRenderer.renderImage(from: bmoResult) {
+        return .text(Text(image))
+      }
+
+      // Fallback to placeholder text
+      return .string(AttributedString("(\(bmoCode))"))
     },
   ]
 }

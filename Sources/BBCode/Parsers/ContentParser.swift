@@ -52,7 +52,7 @@ func parseContent(_ g: inout USIterator, _ worker: Worker) -> Parser? {
         } else {
           newNode.value.append(Character(c))
         }
-      } else if c == UnicodeScalar("(") {  // <smilies>
+      } else if c == UnicodeScalar("(") {  // <bgm> or <bmo>
         return .smilies
       } else {  // <content>
         newNode.value.append(Character(c))

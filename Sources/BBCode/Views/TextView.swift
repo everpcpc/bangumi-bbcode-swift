@@ -42,19 +42,22 @@ public struct BBCodeView: View {
     存放于其他网络服务器的图片：[img]https://chii.in/img/ico/bgm88-31.gif[/img]
     调整图片大小[img=60,40]https://chii.in/img/ico/bgm88-31.gif[/img]
     [img=600,400]https://chii.in/img/ico/bgm88-31.gif[/img]
-    
+
     [img]https://raw.githubusercontent.com/onevcat/Kingfisher-TestImages/master/DemoAppImage/GIF/2.gif[/img]
     [img]https://static.hya.moe/execwb-publish/bgm-publish-heading.webp[/img]
     [img]https://static.hya.moe/execwb-demo.avif[/img]
     [img]https://static.hya.moe/execwb-demo.mp4[/img]
     [img]https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/svg2009.svg[/img]
-    
+
     代码片段：
     [code]
     print("Hello, World!")
     exit(0)
     [/code]
-    (bgm38) (bgm24)
+    (bgm38)
+    (bgm24)
+    (bmoCAoAEghP8A4BNgiKWBA)
+    (bmoCArACghOkAoBNgiKGAg)
     [quote]引用的片段[/quote]
     [photo=104569]4b/d1/873244_3p4I7.jpg[/photo]
     [subject=12]ちぃでかける[/subject]

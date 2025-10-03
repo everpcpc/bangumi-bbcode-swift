@@ -81,4 +81,16 @@ class PlainTests: XCTestCase {
     let plain = try! BBCode().plain(bbcode)
     XCTAssertEqual(plain, "")
   }
+
+  func testBmo() {
+    let bbcode = "BMO表情：(bmoCAkiCE0CATYIiNA)"
+    let plain = try! BBCode().plain(bbcode)
+    XCTAssertEqual(plain, "BMO表情：")
+  }
+
+  func testBmoEmpty() {
+    let bbcode = "空BMO：(bmoC)"
+    let plain = try! BBCode().plain(bbcode)
+    XCTAssertEqual(plain, "空BMO：")
+  }
 }

@@ -5,7 +5,7 @@ typealias HTMLRender = (Node, [String: Any]?) -> String
 typealias TextRender = (Node, [String: Any]?) -> TextView
 typealias PlainRender = (Node, [String: Any]?) -> String
 
-enum TextView {
+public enum TextView {
   case view(AnyView)
   case text(Text)
   case string(AttributedString)
@@ -97,7 +97,7 @@ enum BBType: Int {
   case quote, code, url, image, photo
   case bold, italic, underline, delete, color, size, mask
   case list, listitem
-  case smilies
+  case bgm, bmo
   case subject, user
   case background, avatar, float
 
@@ -131,7 +131,8 @@ enum BBType: Int {
     case .mask: return "mask"
     case .list: return "list"
     case .listitem: return "listitem"
-    case .smilies: return "smilies"
+    case .bgm: return "bgm"
+    case .bmo: return "bmo"
     case .subject: return "subject"
     case .user: return "user"
     case .background: return "background"
@@ -149,7 +150,7 @@ let tags: [TagInfo] = [
       allowedChildren: [
         .plain, .br, .paragraphStart, .paragraphEnd,
         .mask, .quote, .code, .url, .image,
-        .smilies, .photo,
+        .bgm, .bmo, .photo,
         .list, .subject, .user,
       ] + BBType.unsupported + BBType.layout + BBType.textStyle,
       allowAttr: false,
@@ -318,7 +319,7 @@ let tags: [TagInfo] = [
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
       allowedChildren: [
-        .br, .mask, .quote, .code, .url, .image, .smilies, .subject, .user,
+        .br, .mask, .quote, .code, .url, .image, .bgm, .subject, .user,
       ] + BBType.unsupported + BBType.layout + BBType.textStyle,
       allowAttr: false,
       isBlock: true
@@ -408,7 +409,7 @@ let tags: [TagInfo] = [
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
       allowedChildren: [
-        .url, .mask, .smilies, .br, .subject, .user,
+        .url, .mask, .bgm, .br, .subject, .user,
       ] + BBType.unsupported + BBType.layout + BBType.textStyle,
       allowAttr: true,
       isBlock: false
@@ -426,7 +427,15 @@ let tags: [TagInfo] = [
     )
   ),
   TagInfo(
-    "bgm", .smilies,
+    "bgm", .bgm,
+    TagDescription(
+      tagNeeded: true, isSelfClosing: true,
+      allowedChildren: nil, allowAttr: true,
+      isBlock: false
+    )
+  ),
+  TagInfo(
+    "bmo", .bmo,
     TagDescription(
       tagNeeded: true, isSelfClosing: true,
       allowedChildren: nil, allowAttr: true,

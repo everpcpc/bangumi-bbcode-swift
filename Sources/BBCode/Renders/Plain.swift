@@ -110,7 +110,10 @@ var plainRenders: [BBType: PlainRender] {
       let plain = n.renderInnerPlain(args)
       return Array(repeating: "■", count: plain.count).joined()
     },
-    .smilies: { (n: Node, args: [String: Any]?) in
+    .bgm: { (n: Node, args: [String: Any]?) in
+      return ""
+    },
+    .bmo: { (n: Node, args: [String: Any]?) in
       return ""
     },
   ]

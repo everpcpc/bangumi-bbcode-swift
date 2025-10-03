@@ -337,11 +337,33 @@ var htmlRenders: [BBType: HTMLRender] {
       html.append("</span>")
       return html
     },
-    .smilies: { (n: Node, args: [String: Any]?) in
+    .bgm: { (n: Node, args: [String: Any]?) in
       let bgmId = Int(n.attr) ?? 24
       let iconId = String(format: "%02d", bgmId - 23)
       return
         "<img src=\"https://lain.bgm.tv/img/smiles/tv/\(iconId).gif\" alt=\"(bgm\(bgmId))\" />"
+    },
+    .bmo: { (n: Node, args: [String: Any]?) in
+      let bmoCode = n.attr
+      // Decode the BMO code to get emoji information
+      let bmoResult = BmoDecoder.decode(bmoCode)
+
+      if bmoResult.items.isEmpty {
+        // If no items found, return the original code as text
+        return "<span class=\"bmo-placeholder\">(\(bmoCode))</span>"
+      }
+
+      // Render the BMO emoji as a data URL
+      if let cgImage = BmoRenderer.renderCGImage(from: bmoResult),
+        let data = cgImage.dataProvider?.data
+      {
+        let base64String = Data(referencing: data).base64EncodedString()
+        return
+          "<img src=\"data:image/png;base64,\(base64String)\" alt=\"(\(bmoCode))\" style=\"width: 63px; height: 63px;\" />"
+      }
+
+      // Fallback to placeholder
+      return "<span class=\"bmo-emoji\" data-code=\"\(bmoCode)\">(\(bmoCode))</span>"
     },
   ]
 }

@@ -132,4 +132,19 @@ class HTMLTests: XCTestCase {
     )
   }
 
+  func testBmo() {
+    let result = try! BBCode().html("BMO表情：(bmoCAkiCE0CATYIiNA)")
+    // BMO should now render as an actual image with base64 data URL
+    XCTAssertTrue(result.contains("BMO表情：<img src=\"data:image/png;base64,"))
+    XCTAssertTrue(result.contains("alt=\"(bmoCAkiCE0CATYIiNA)\""))
+    XCTAssertTrue(result.contains("style=\"width: 63px; height: 63px;\""))
+  }
+
+  func testBmoEmpty() {
+    XCTAssertEqual(
+      try BBCode().html("空BMO：(bmoC)"),
+      "空BMO：<span class=\"bmo-placeholder\">(bmoC)</span>"
+    )
+  }
+
 }
