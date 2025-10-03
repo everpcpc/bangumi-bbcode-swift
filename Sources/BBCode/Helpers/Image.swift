@@ -98,7 +98,9 @@ struct ImageView: View {
       failed = true
     }
     .onSuccess { image, data, cacheType in
-      self.width = image.size.width
+      DispatchQueue.main.async {
+        self.width = image.size.width
+      }
     }
     .indicator(.activity)
     .transition(.fade(duration: 0.25))
