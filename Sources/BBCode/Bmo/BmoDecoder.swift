@@ -311,7 +311,15 @@ struct VarReader {
   private func decodeZigZag(_ value: UInt32) -> Int32 {
     let unsigned = UInt32(value)
     let mask = (unsigned & 1) == 1 ? UInt32.max : 0
-    return Int32((unsigned >> 1) ^ mask)
+    let result = (unsigned >> 1) ^ mask
+
+    // Handle the case where the result might be too large for Int32
+    // If the result is >= 0x80000000, it represents a negative number
+    if result >= 0x8000_0000 {
+      return Int32(bitPattern: result)
+    } else {
+      return Int32(result)
+    }
   }
 }
 
