@@ -7,7 +7,7 @@ func parseSmilies(_ g: inout USIterator, _ worker: Worker) -> Parser? {
   worker.currentNode.children.append(newNode)
 
   var index: Int = 0
-  let maxLength: Int = 50  // BMO codes can be longer than bgm
+  let maxLength: Int = 100
   let bgmRegex = try! Regex(#"bgm(?<id>\d+)"#, as: (Substring, id: Substring).self)
   while let c = g.next() {
     if c == UnicodeScalar(")") {
