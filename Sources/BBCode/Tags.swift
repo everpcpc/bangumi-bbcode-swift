@@ -319,7 +319,7 @@ let tags: [TagInfo] = [
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
       allowedChildren: [
-        .br, .mask, .quote, .code, .url, .image, .bgm, .subject, .user,
+        .br, .mask, .quote, .code, .url, .image, .subject, .user,
       ] + BBType.unsupported + BBType.layout + BBType.textStyle,
       allowAttr: false,
       isBlock: true
@@ -409,7 +409,7 @@ let tags: [TagInfo] = [
     TagDescription(
       tagNeeded: true, isSelfClosing: false,
       allowedChildren: [
-        .url, .mask, .bgm, .br, .subject, .user,
+        .url, .mask, .bgm, .bmo, .br, .subject, .user,
       ] + BBType.unsupported + BBType.layout + BBType.textStyle,
       allowAttr: true,
       isBlock: false
