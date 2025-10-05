@@ -65,14 +65,16 @@ func parseSmilies(_ g: inout USIterator, _ worker: Worker) -> Parser? {
     index = index + 1
   }
 
-  Logger.parser.error("unfinished closing tag: \(worker.currentNode.type.description)")
-  worker.error = BBCodeError.unfinishedClosingTag(
-    unclosedTagDetail(unclosedNode: worker.currentNode))
-  return nil
+  // If we reach here, it means we've reached the end of input without finding a closing ')'
+  // This happens when text ends with '(' - treat it as plain text
+  restoreSmiliesToPlain(node: newNode, c: nil, worker: worker)
+  return .content
 }
 
-func restoreSmiliesToPlain(node: Node, c: UnicodeScalar, worker: Worker) {
+func restoreSmiliesToPlain(node: Node, c: UnicodeScalar?, worker: Worker) {
   node.setTag(tag: worker.tagManager.getInfo(type: .plain)!)
   node.value.insert(Character(UnicodeScalar(40)), at: node.value.startIndex)
-  node.value.append(Character(c))
+  if let c = c {
+    node.value.append(Character(c))
+  }
 }

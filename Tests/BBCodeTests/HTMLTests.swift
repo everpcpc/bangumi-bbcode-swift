@@ -147,6 +147,54 @@ class HTMLTests: XCTestCase {
     )
   }
 
+  func testParenthesesAtEnd() {
+    // Test case for text ending with '(' that should be treated as plain text
+    XCTAssertEqual(
+      try BBCode().html("这是一些文字("),
+      "这是一些文字("
+    )
+  }
+
+  func testParenthesesAtEndWithNewline() {
+    // Test case for text ending with '(' followed by newline
+    XCTAssertEqual(
+      try BBCode().html("这是一些文字(\n"),
+      "这是一些文字(\n"
+    )
+  }
+
+  func testParenthesesAtEndWithCarriageReturn() {
+    // Test case for text ending with '(' followed by carriage return
+    XCTAssertEqual(
+      try BBCode().html("这是一些文字(\r"),
+      "这是一些文字(\r"
+    )
+  }
+
+  func testParenthesesAtEndWithCarriageReturnNewline() {
+    // Test case for text ending with '(' followed by CRLF
+    XCTAssertEqual(
+      try BBCode().html("这是一些文字(\r\n"),
+      "这是一些文字(\r<br>"
+    )
+  }
+
+  func testParenthesesAtEndWithContent() {
+    // Test case for text ending with '(' that has some content but no closing ')'
+    XCTAssertEqual(
+      try BBCode().html("这是一些文字(bgm"),
+      "这是一些文字(bgm"
+    )
+  }
+
+  func testParenthesesAtEndWithInvalidBgm() {
+    // Test case for text ending with '(' that has invalid bgm code
+    XCTAssertEqual(
+      try BBCode().html("这是一些文字(bgm999"),
+      "这是一些文字(bgm999"
+    )
+  }
+
   func testNewEmojiRanges() {
     // Test tv_vs range (200-238) - should use png format
     let tvVsResult = try! BBCode().html("tv_vs表情：(bgm200)")
