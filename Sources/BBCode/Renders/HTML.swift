@@ -343,7 +343,11 @@ var htmlRenders: [BBType: HTMLRender] {
 
       // Determine the image source based on bgmId range
       let imageSrc: String
-      if bgmId >= 24 && bgmId <= 125 {
+      if bgmId > 0 && bgmId < 24 {
+        // old range - use the old URL format
+        let iconId = String(format: "%02d", bgmId)
+        imageSrc = "bgm/\(iconId).gif"
+      } else if bgmId >= 24 && bgmId <= 125 {
         // Original range - use the old URL format
         let iconId = String(format: "%02d", bgmId - 23)
         imageSrc = "tv/\(iconId).gif"

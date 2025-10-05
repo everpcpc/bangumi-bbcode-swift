@@ -632,7 +632,15 @@ var textRenders: [BBType: TextRender] {
 
       // Try to load image with fallback for different formats
       let img: Image
-      if bgmId >= 24 && bgmId <= 125 {
+      if bgmId > 0 && bgmId < 24 {
+        // old range - try gif first, then png
+        let iconId = String(format: "%02d", bgmId)
+        if Bundle.module.path(forResource: "bgm\(iconId)", ofType: "gif") != nil {
+          img = Image(packageResource: "bgm\(iconId)", ofType: "gif")
+        } else {
+          img = Image(packageResource: "bgm\(iconId)", ofType: "png")
+        }
+      } else if bgmId >= 24 && bgmId <= 125 {
         // Original range - try gif first
         img = Image(packageResource: "bgm\(bgmId)", ofType: "gif")
       } else if bgmId >= 200 && bgmId <= 238 {
