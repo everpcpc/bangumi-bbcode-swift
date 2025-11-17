@@ -7,7 +7,7 @@ extension View {
   /// https://developer.apple.com/documentation/swiftui/applying-liquid-glass-to-custom-views#Apply-and-configure-Liquid-Glass-effects
   @ViewBuilder
   func glassEffectIfAvailable(tint: Color, shape: some Shape) -> some View {
-    if #available(iOS 26.0, *) {
+    if #available(iOS 26.0, macOS 26.0, *) {
       self.glassEffect(.regular.tint(tint), in: shape)
     } else {
       self
@@ -18,7 +18,7 @@ extension View {
   /// 在 OS 26+ 使用液态玻璃效果，否则使用指定的样式
   @ViewBuilder
   func adaptiveButtonStyle(_ style: ButtonStyleType) -> some View {
-    if #available(iOS 26.0, *) {
+    if #available(iOS 26.0, macOS 26.0, *) {
       switch style {
       case .bordered:
         self.buttonStyle(.glass)
