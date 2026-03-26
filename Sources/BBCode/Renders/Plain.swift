@@ -94,6 +94,9 @@ var plainRenders: [BBType: PlainRender] {
     .italic: { (n: Node, args: [String: Any]?) in
       return n.renderInnerPlain(args)
     },
+    .font: { (n: Node, args: [String: Any]?) in
+      return n.renderInnerPlain(args)
+    },
     .underline: { (n: Node, args: [String: Any]?) in
       return n.renderInnerPlain(args)
     },

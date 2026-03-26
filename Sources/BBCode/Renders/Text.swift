@@ -527,6 +527,28 @@ var textRenders: [BBType: TextRender] {
         )
       }
     },
+    .font: { (n: Node, args: [String: Any]?) in
+      let inner = n.renderInnerText(args)
+      if n.attr.isEmpty {
+        return inner
+      }
+      let fontName = n.attr
+      let textSize = CGFloat(args?["textSize"] as? Int ?? 16)
+      let font = Font.custom(fontName, size: textSize)
+      switch inner {
+      case .string(var content):
+        content.font = font
+        return .string(content)
+      case .text(let content):
+        return .text(content.font(font))
+      case .view(let content):
+        return .view(
+          AnyView(
+            content.font(font)
+          )
+        )
+      }
+    },
     .underline: { (n: Node, args: [String: Any]?) in
       let inner = n.renderInnerText(args)
       switch inner {

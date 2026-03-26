@@ -213,4 +213,10 @@ class HTMLTests: XCTestCase {
     XCTAssertTrue(mixedResult.contains("bgm500"))
   }
 
+  func testFont() {
+    XCTAssertEqual(
+      try BBCode().html("使用字体：[font=Arial]这是Arial[font=宋体]字体[/font][/font]"),
+      "使用字体：<span style=\"font-family: Arial\">这是Arial<span style=\"font-family: 宋体\">字体</span></span>"
+    )
+  }
 }

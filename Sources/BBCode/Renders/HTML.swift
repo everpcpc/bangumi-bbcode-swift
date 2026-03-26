@@ -263,6 +263,15 @@ var htmlRenders: [BBType: HTMLRender] {
       html.append("</em>")
       return html
     },
+    .font: { (n: Node, args: [String: Any]?) in
+      var html: String
+      if n.attr.isEmpty {
+        html = n.renderInnerHTML(args)
+      } else {
+        html = "<span style=\"font-family: \(n.escapedAttr)\">\(n.renderInnerHTML(args))</span>"
+      }
+      return html
+    },
     .underline: { (n: Node, args: [String: Any]?) in
       var html: String = "<u>"
       html.append(n.renderInnerHTML(args))

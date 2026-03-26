@@ -93,4 +93,10 @@ class PlainTests: XCTestCase {
     let plain = try! BBCode().plain(bbcode)
     XCTAssertEqual(plain, "空BMO：")
   }
+
+  func testFont() {
+    let bbcode = "使用字体：[font=Arial]这是Arial[font=宋体]字体[/font][/font]"
+    let plain = try! BBCode().plain(bbcode)
+    XCTAssertEqual(plain, "使用字体：这是Arial字体")
+  }
 }
