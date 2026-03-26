@@ -64,8 +64,9 @@ class HTMLTests: XCTestCase {
 
   func testSize() {
     XCTAssertEqual(
-      try BBCode().html("[size=10]不同[/size][size=14]大小的[/size][size=18]文字[/size]效果也可实现"),
-      "<span style=\"font-size: 10px\">不同</span><span style=\"font-size: 14px\">大小的</span><span style=\"font-size: 18px\">文字</span>效果也可实现"
+      try BBCode().html(
+        "[size=10]不同[/size][size=14]大小的[/size][size=18]文字[/size]效果[size=6]也可实现[/size]"),
+      "<span style=\"font-size: 10px;\">不同</span><span style=\"font-size: 14px;\">大小的</span><span style=\"font-size: 18px;\">文字</span>效果<span style=\"font-size: xx-large;\">也可实现</span>"
     )
   }
 

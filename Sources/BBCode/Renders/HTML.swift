@@ -324,7 +324,8 @@ var htmlRenders: [BBType: HTMLRender] {
           valid = true
         }
         if valid {
-          html = "<span style=\"font-size: \(n.attr)px\">\(n.renderInnerHTML(args))</span>"
+          html =
+            "<span style=\"font-size: \(getFontSizeString(size: size!));\">\(n.renderInnerHTML(args))</span>"
         } else {
           html = "[size=\(n.escapedAttr)]\(n.renderInnerHTML(args))[/size]"
         }
@@ -400,6 +401,27 @@ var htmlRenders: [BBType: HTMLRender] {
       return "<span class=\"bmo-emoji\" data-code=\"\(bmoCode)\">(\(bmoCode))</span>"
     },
   ]
+}
+
+func getFontSizeString(size: Int) -> String {
+  switch size {
+  case 1:
+    return "x-small"
+  case 2:
+    return "small"
+  case 3:
+    return "medium"
+  case 4:
+    return "large"
+  case 5:
+    return "x-large"
+  case 6:
+    return "xx-large"
+  case 7:
+    return "xxx-large"
+  default:
+    return "\(size)px"
+  }
 }
 
 func BBCodeToHTML(code: String, textSize: Int) -> String {

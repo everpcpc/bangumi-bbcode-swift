@@ -584,26 +584,39 @@ var textRenders: [BBType: TextRender] {
       if n.attr.isEmpty {
         return n.renderInnerText(args)
       }
-      guard var size = Int(n.attr) else {
+      guard let size = Int(n.attr) else {
         return n.renderInnerText(args)
       }
-      if size < 8 {
-        size = 8
-      }
-      if size > 50 {
-        size = 50
+      let font: Font
+      switch size {
+      case 1:
+        font = .caption
+      case 2:
+        font = .footnote
+      case 3:
+        font = .body
+      case 4:
+        font = .subheadline
+      case 5:
+        font = .headline
+      case 6:
+        font = .title
+      case 7:
+        font = .largeTitle
+      default:
+        font = .system(size: CGFloat(min(max(size, 8), 50)))
       }
       switch n.renderInnerText(args) {
       case .string(var content):
         // FIXME: preserve inner font style
-        content.font = .system(size: CGFloat(size))
+        content.font = font
         return .string(content)
       case .text(let content):
-        return .text(content.font(.system(size: CGFloat(size))))
+        return .text(content.font(font))
       case .view(let content):
         return .view(
           AnyView(
-            content.font(.system(size: CGFloat(size)))
+            content.font(font)
           )
         )
       }
